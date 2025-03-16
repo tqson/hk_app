@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -18,9 +18,14 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'username',
+        'full_name',
+        'date_of_birth',
+        'address',
+        'phone',
         'email',
-        'password',
+        'bank_name',
+        'bank_account_number',
     ];
 
     /**
@@ -39,6 +44,31 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'date_of_birth' => 'date',
+//        'password' => 'hashed',
+        'created_at' => 'datetime',
     ];
+
+    /**
+     * Get the sales invoices for the user.
+     */
+    public function salesInvoices()
+    {
+        return $this->hasMany(SalesInvoice::class);
+    }
+
+    /**
+     * Get the user's avatar URL.
+     *
+     * @return string
+     */
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar) {
+            return Storage::url($this->avatar);
+        }
+
+        // Generate avatar from name if no avatar is set
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=random&size=200';
+    }
 }
