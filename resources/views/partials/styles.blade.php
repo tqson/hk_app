@@ -156,6 +156,25 @@
         border-top: 1px solid #f0f0f0;
     }
 
+    .topbar-user-avatar.dropdown {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .topbar-user-avatar .dropdown-menu {
+        position: absolute;
+        right: 0;
+        left: auto;
+        top: 100%;
+        margin-top: 0.5rem;
+        z-index: 1002; /* Ensure it's above other elements */
+    }
+
+    /* Add this to ensure dropdown is visible */
+    .dropdown-menu.show {
+        display: block;
+    }
+
     /* Sidebar Styles */
     .sidebar {
         position: fixed;

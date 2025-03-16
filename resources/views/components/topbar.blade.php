@@ -10,13 +10,9 @@
             <div class="topbar-user-name">{{ Auth::user()->name ?? 'Admin User' }}</div>
             <div class="topbar-user-role">{{ Auth::user()->role ?? 'Administrator' }}</div>
         </div>
-        <div class="topbar-user-avatar dropdown">
-            <!-- Add dropdown toggle -->
-            <a href="#" class="dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown"
-               aria-expanded="false">
-                <img
-                    src="{{ Auth::user()->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'Admin User') . '&background=random' }}"
-                    alt="User Avatar">
+        <div class="dropdown">
+            <a href="#" class="topbar-user-avatar dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="{{ Auth::user()->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'Admin User') . '&background=random' }}" alt="User Avatar">
             </a>
 
             <!-- Dropdown menu -->
@@ -32,8 +28,7 @@
                 <li>
                     <form method="POST" action="{{ route('logout') }}" id="logout-form">
                         @csrf
-                        <a class="dropdown-item" href="#"
-                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
                         </a>
                     </form>

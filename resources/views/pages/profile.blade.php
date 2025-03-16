@@ -11,25 +11,23 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <div class="profile-avatar-container">
+                    <div class="profile-avatar-container mb-3">
                         <img src="{{ Auth::user()->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'Admin User') . '&background=random&size=200' }}"
                              alt="User Avatar" class="profile-avatar">
-
-                        <!-- Avatar upload button -->
-                        <div class="profile-avatar-upload">
-                            <form action="{{ route('profile.avatar.update') }}" method="POST" enctype="multipart/form-data" id="avatar-form">
-                                @csrf
-                                @method('PUT')
-                                <label for="avatar" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-camera"></i> Đổi ảnh
-                                </label>
-                                <input type="file" name="avatar" id="avatar" class="d-none" accept="image/*" onchange="document.getElementById('avatar-form').submit()">
-                            </form>
-                        </div>
                     </div>
 
-                    <h4 class="mt-3 mb-1">{{ Auth::user()->name }}</h4>
-                    <p class="text-muted">{{ Auth::user()->role ?? 'Administrator' }}</p>
+                    <h4 class="mt-2 mb-1">{{ Auth::user()->name }}</h4>
+{{--                    <p class="text-muted">{{ Auth::user()->role ?? 'Administrator' }}</p>--}}
+
+                    <!-- Avatar upload button - đã chuyển xuống dưới và làm đẹp hơn -->
+                    <form action="{{ route('profile.avatar.update') }}" method="POST" enctype="multipart/form-data" id="avatar-form" class="mb-3">
+                        @csrf
+                        @method('PUT')
+                        <label for="avatar" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-camera mr-1"></i> Thay đổi ảnh đại diện
+                        </label>
+                        <input type="file" name="avatar" id="avatar" class="d-none" accept="image/*" onchange="document.getElementById('avatar-form').submit()">
+                    </form>
 
                     <div class="profile-stats">
                         <div class="row">
@@ -97,11 +95,6 @@
                         <div class="mb-3">
                             <label for="address" class="form-label">Địa chỉ</label>
                             <textarea class="form-control" id="address" name="address" rows="3">{{ old('address', Auth::user()->address) }}</textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="bio" class="form-label">Giới thiệu</label>
-                            <textarea class="form-control" id="bio" name="bio" rows="3">{{ old('bio', Auth::user()->bio) }}</textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
