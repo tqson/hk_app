@@ -20,6 +20,7 @@ class Product extends Model
         'unit',
         'batch_number',
         'expiration_date',
+        'status',
         'stock',
     ];
 

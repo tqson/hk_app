@@ -69,7 +69,12 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="expiration_date">Hạn sử dụng <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control @error('expiration_date') is-invalid @enderror" id="expiration_date" name="expiration_date" value="{{ old('expiration_date', $product->expiration_date) }}" required>
+                                        <input type="date"
+                                               class="form-control @error('expiration_date') is-invalid @enderror"
+                                               id="expiration_date"
+                                               name="expiration_date"
+                                               value="{{ old('expiration_date', $product->expiration_date ? date('Y-m-d', strtotime($product->expiration_date)) : '') }}"
+                                               required>
                                         @error('expiration_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

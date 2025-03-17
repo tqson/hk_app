@@ -9,10 +9,39 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->orderBy('created_at', 'desc')->get();
+        $query = Product::with('category');
+
+        // Search by product name
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Order by created_at
+        $query->orderBy('created_at', 'desc');
+
+        // Pagination
+        $perPage = $request->input('perPage', 10); // Default to 10 items per page
+        $products = $query->paginate($perPage)->appends($request->except('page'));
+
         return view('pages.products.index', compact('products'));
+    }
+
+    public function deactivate(Product $product)
+    {
+        $product->status = false;
+        $product->save();
+
+        return redirect()->route('products.index')->with('success', 'Sản phẩm đã được dừng hoạt động thành công.');
+    }
+
+    public function activate(Product $product)
+    {
+        $product->status = true;
+        $product->save();
+
+        return redirect()->route('products.index')->with('success', 'Sản phẩm đã được kích hoạt thành công.');
     }
 
     public function create()
