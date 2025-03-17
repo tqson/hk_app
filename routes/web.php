@@ -35,7 +35,13 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/products/{product}/activate', [ProductController::class, 'activate'])->name('products.activate');
 
     Route::resource('product-categories', ProductCategoryController::class);
-    Route::resource('sales', SaleController::class);
+
+    // Sales routes
+    Route::get('/sales', [App\Http\Controllers\SalesController::class, 'index'])->name('sales.index');
+    Route::get('/sales/search-products', [App\Http\Controllers\SalesController::class, 'searchProducts'])->name('sales.search-products');
+    Route::get('/sales/get-product/{id}', [App\Http\Controllers\SalesController::class, 'getProduct'])->name('sales.get-product');
+    Route::post('/sales/create-invoice', [App\Http\Controllers\SalesController::class, 'createInvoice'])->name('sales.create-invoice');
+
     Route::resource('purchases', PurchaseController::class);
     Route::resource('suppliers', SupplierController::class);
 

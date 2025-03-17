@@ -22,6 +22,8 @@ class Product extends Model
         'expiration_date',
         'status',
         'stock',
+        'price',
+        'created_at'
     ];
 
     /**

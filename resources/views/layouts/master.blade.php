@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Flatpickr for date picker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -46,6 +48,54 @@
 <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    // Cấu hình mặc định cho Toastr
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+</script>
+
+<!-- Hiển thị thông báo từ session -->
+@if(session('success'))
+    <script>
+        toastr.success('{{ session('success') }}');
+    </script>
+@endif
+
+@if(session('error'))
+    <script>
+        toastr.error('{{ session('error') }}');
+    </script>
+@endif
+
+@if(session('info'))
+    <script>
+        toastr.info('{{ session('info') }}');
+    </script>
+@endif
+
+@if(session('warning'))
+    <script>
+        toastr.warning('{{ session('warning') }}');
+    </script>
+@endif
 
 <!-- Include scripts -->
 @include('partials.scripts')

@@ -24,6 +24,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'AMX'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(100, 500),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
             [
                 'name' => 'Cefixime',
@@ -32,6 +33,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'CFX'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(100, 500),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
             [
                 'name' => 'Azithromycin',
@@ -40,6 +42,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'AZT'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(100, 500),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
 
             // Thuốc giảm đau (category_id: 2)
@@ -50,6 +53,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'PCT'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(3)->format('Y-m-d'),
                 'stock' => rand(200, 800),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
             [
                 'name' => 'Ibuprofen',
@@ -58,6 +62,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'IBP'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(3)->format('Y-m-d'),
                 'stock' => rand(200, 800),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
 
             // Thuốc hạ sốt (category_id: 3)
@@ -68,6 +73,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'EFG'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(150, 600),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
 
             // Thuốc chống viêm (category_id: 4)
@@ -78,6 +84,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'MPD'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(100, 400),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
             [
                 'name' => 'Diclofenac',
@@ -86,6 +93,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'DCF'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(100, 400),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
 
             // Thuốc tiêu hóa (category_id: 5)
@@ -96,6 +104,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'OMP'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(150, 500),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
             [
                 'name' => 'Mebeverine',
@@ -104,6 +113,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'MBV'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(150, 500),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
 
             // Thuốc tim mạch (category_id: 6)
@@ -114,6 +124,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'ASP'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(3)->format('Y-m-d'),
                 'stock' => rand(200, 600),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
             [
                 'name' => 'Atorvastatin',
@@ -122,6 +133,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'ATV'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(150, 500),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
 
             // Thuốc huyết áp (category_id: 7)
@@ -132,6 +144,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'AML'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(150, 500),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
             [
                 'name' => 'Losartan',
@@ -140,6 +153,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'LST'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(150, 500),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
 
             // Thuốc tiểu đường (category_id: 8)
@@ -150,6 +164,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'MTF'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(150, 500),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
             [
                 'name' => 'Gliclazide',
@@ -158,6 +173,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'GLC'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(150, 500),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
 
             // Vitamin và khoáng chất (category_id: 9)
@@ -168,6 +184,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'VTC'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(3)->format('Y-m-d'),
                 'stock' => rand(300, 1000),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
             [
                 'name' => 'Vitamin D3',
@@ -176,6 +193,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'VTD'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(3)->format('Y-m-d'),
                 'stock' => rand(300, 1000),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
             [
                 'name' => 'Calcium',
@@ -184,6 +202,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'CAL'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(3)->format('Y-m-d'),
                 'stock' => rand(300, 1000),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
 
             // Thuốc da liễu (category_id: 10)
@@ -194,6 +213,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'MMT'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(50, 200),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
             [
                 'name' => 'Clotrimazole',
@@ -202,6 +222,7 @@ class ProductSeeder extends Seeder
                 'batch_number' => 'CTM'.rand(1000, 9999),
                 'expiration_date' => Carbon::now()->addYears(2)->format('Y-m-d'),
                 'stock' => rand(50, 200),
+                'price' => round(rand(50000, 200000) / 1000) * 1000,
             ],
         ];
 

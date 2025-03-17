@@ -14,7 +14,7 @@
             </a>
             <ul class="sidebar-submenu">
                 <li>
-                    <a href="#" class="sidebar-submenu-link">
+                    <a href="{{ route('sales.index') }}" class="sidebar-submenu-link">
                         <span>Tạo đơn hàng</span>
                     </a>
                 </li>

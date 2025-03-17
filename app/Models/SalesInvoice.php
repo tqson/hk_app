@@ -10,25 +10,28 @@ class SalesInvoice extends Model
     use HasFactory;
 
     protected $fillable = [
-        'invoice_number',
-        'customer_id',
+        'user_id',
         'total_amount',
         'discount',
-        'tax',
-        'final_amount',
         'payment_method',
-        'payment_status',
         'notes',
-        'created_by',
+        'created_at'
     ];
 
-    public function creator()
+    public $timestamps = false;
+
+    public function user()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class);
     }
 
-    public function items()
+    public function details()
     {
-        return $this->hasMany(SalesInvoiceDetail::class);
+        return $this->hasMany(SalesInvoiceDetail::class, 'invoice_id');
+    }
+
+    public function returnInvoice()
+    {
+        return $this->hasOne(ReturnInvoice::class, 'sales_invoice_id');
     }
 }

@@ -19,17 +19,10 @@ class SalesInvoiceDetail extends Model
         'product_id',
         'quantity',
         'price',
+        'created_at'
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'price' => 'decimal:2',
-        'created_at' => 'datetime',
-    ];
+    public $timestamps = false;
 
     /**
      * Get the invoice that owns the detail.
