@@ -517,4 +517,24 @@
             margin-left: 0;
         }
     }
+
+    .text-right {
+        text-align: right !important;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .btn-info {
+        color: #fff;
+    }
+
+    .pagination {
+        justify-content: center;
+    }
 </style>

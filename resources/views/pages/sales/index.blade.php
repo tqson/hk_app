@@ -51,7 +51,7 @@
         <h1 class="mb-4">Bán hàng</h1>
 
         <div class="row mb-4">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group position-relative">
@@ -496,20 +496,25 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            // Hiển thị thông báo thành công
-                            toastr.success('Tạo hóa đơn thành công!');
-
-                            // Reset form
-                            cart = [];
-                            updateCartTable();
-                            $('#discount').val(0);
-                            $('#cashAmount').val(0).prop('disabled', false);
-                            $('#transferAmount').val(0).prop('disabled', false);
-                            $('#notes').val('');
-                            $('#qrCodeBtn').prop('disabled', false);
-                            $('#paymentBtn').prop('disabled', false);
+                            Swal.fire({
+                                title: 'Thành công!',
+                                text: response.message,
+                                icon: 'success',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#6c757d',
+                                confirmButtonText: 'Xem danh sách hóa đơn',
+                                cancelButtonText: 'Tiếp tục bán hàng'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "{{ route('sales.invoices') }}";
+                                } else {
+                                    // Reset form và giỏ hàng
+                                    resetForm();
+                                }
+                            });
                         } else {
-                            toastr.error('Có lỗi xảy ra!');
+                            Swal.fire('Lỗi!', response.message, 'error');
                         }
                     },
                     error: function(xhr) {

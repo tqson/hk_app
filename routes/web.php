@@ -41,6 +41,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sales/search-products', [App\Http\Controllers\SalesController::class, 'searchProducts'])->name('sales.search-products');
     Route::get('/sales/get-product/{id}', [App\Http\Controllers\SalesController::class, 'getProduct'])->name('sales.get-product');
     Route::post('/sales/create-invoice', [App\Http\Controllers\SalesController::class, 'createInvoice'])->name('sales.create-invoice');
+    Route::get('/sales/invoices', [App\Http\Controllers\SalesController::class, 'invoiceList'])->name('sales.invoices');
+    Route::get('/sales/invoices/{id}', [App\Http\Controllers\SalesController::class, 'invoiceDetail'])->name('sales.invoice-detail');
 
     Route::resource('purchases', PurchaseController::class);
     Route::resource('suppliers', SupplierController::class);

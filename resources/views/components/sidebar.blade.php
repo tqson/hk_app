@@ -19,7 +19,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="sidebar-submenu-link">
+                    <a href="{{ route('sales.invoices') }}" class="sidebar-submenu-link {{ request()->routeIs('sales.invoices') ? 'active' : '' }}">
                         <span>Danh sách đơn hàng</span>
                     </a>
                 </li>

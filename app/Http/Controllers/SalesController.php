@@ -37,53 +37,92 @@ class SalesController extends Controller
 
     public function createInvoice(Request $request)
     {
-        $request->validate([
-            'products' => 'required|array',
-            'products.*.id' => 'required|exists:products,id',
-            'products.*.quantity' => 'required|integer|min:1',
-            'products.*.price' => 'required|numeric|min:0',
-            'total_amount' => 'required|numeric|min:0',
-            'discount' => 'nullable|numeric|min:0',
-            'final_amount' => 'required|numeric|min:0',
-            'cash_amount' => 'nullable|numeric|min:0',
-            'transfer_amount' => 'nullable|numeric|min:0',
-            'change_amount' => 'nullable|numeric',
-            'notes' => 'nullable|string',
-        ]);
-
-        DB::beginTransaction();
         try {
-            // Create sales invoice
+            DB::beginTransaction();
+
+            // Xác định phương thức thanh toán
+            $paymentMethod = 'cash'; // Mặc định là tiền mặt
+            if ($request->transfer_amount > 0 && $request->cash_amount > 0) {
+                $paymentMethod = 'mixed'; // Kết hợp
+            } elseif ($request->transfer_amount > 0) {
+                $paymentMethod = 'transfer'; // Chuyển khoản
+            }
+
+            // Tạo hóa đơn
             $invoice = new SalesInvoice();
             $invoice->user_id = Auth::id();
-            $invoice->total_amount = $request->final_amount;
-            $invoice->discount = $request->discount ?? 0;
-            $invoice->payment_method = $request->cash_amount > 0 ? 'cash' : 'transfer';
+            $invoice->total_amount = $request->total_amount;
+            $invoice->discount = $request->discount;
+            $invoice->payment_method = $paymentMethod;
             $invoice->notes = $request->notes;
             $invoice->created_at = now();
             $invoice->save();
 
-            // Create invoice details and update stock
-            foreach ($request->products as $item) {
+//            dd($request->products);
+            // Tạo chi tiết hóa đơn
+            $products = $request->products;
+
+            foreach ($products as $product) {
                 $detail = new SalesInvoiceDetail();
                 $detail->invoice_id = $invoice->id;
-                $detail->product_id = $item['id'];
-                $detail->quantity = $item['quantity'];
-                $detail->price = $item['price'];
-                $detail->created_at = now();
+                $detail->product_id = $product['id'];
+                $detail->quantity = $product['quantity'];
+                $detail->price = $product['price'];
                 $detail->save();
 
-                // Update product stock
-                $product = Product::find($item['id']);
-                $product->stock -= $item['quantity'];
-                $product->save();
+                // Cập nhật tồn kho
+                $productModel = Product::find($product['id']);
+                $productModel->stock -= $product['quantity'];
+                $productModel->save();
             }
 
             DB::commit();
-            return response()->json(['success' => true, 'invoice_id' => $invoice->id]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Hóa đơn đã được tạo thành công!',
+                'invoice_id' => $invoice->id
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
         }
+    }
+
+    public function invoiceList(Request $request)
+    {
+        $perPage = $request->input('perPage', 10); // Mặc định là 10 nếu không có tham số
+
+        $query = SalesInvoice::with('user')
+            ->orderBy('created_at', 'desc');
+
+        // Tìm kiếm theo ngày
+        if ($request->has('date_from') && $request->date_from) {
+            $dateFrom = Carbon::parse($request->date_from)->startOfDay();
+            $query->where('created_at', '>=', $dateFrom);
+        }
+
+        if ($request->has('date_to') && $request->date_to) {
+            $dateTo = Carbon::parse($request->date_to)->endOfDay();
+            $query->where('created_at', '<=', $dateTo);
+        }
+
+        $invoices = $query->paginate($perPage);
+
+        // Đảm bảo các tham số tìm kiếm được giữ lại khi phân trang
+        $invoices->appends($request->except('page'));
+
+        return view('pages.sales.invoice-list', compact('invoices'));
+    }
+
+    // Thêm phương thức để xem chi tiết hóa đơn
+    public function invoiceDetail($id)
+    {
+        $invoice = SalesInvoice::with(['details.product', 'user'])->findOrFail($id);
+
+        return view('pages.sales.invoice-detail', compact('invoice'));
     }
 }
