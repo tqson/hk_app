@@ -2,8 +2,6 @@
 
 @section('title', 'Thêm danh mục sản phẩm - HK LOVE')
 
-@section('page-title', 'Thêm danh mục sản phẩm')
-
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -15,7 +13,7 @@
                     <div class="card-body">
                         <form action="{{ route('product-categories.store') }}" method="POST">
                             @csrf
-                            <div class="form-group">
+                            <div class="form-group mb-3">
                                 <label for="name">Tên danh mục <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
                                 @error('name')

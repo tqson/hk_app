@@ -24,7 +24,7 @@
                         @csrf
                         @method('PUT')
                         <label for="avatar" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-camera mr-1"></i> Thay đổi ảnh đại diện
+                            <i class="fas fa-camera me-1"></i> Thay đổi ảnh đại diện
                         </label>
                         <input type="file" name="avatar" id="avatar" class="d-none" accept="image/*" onchange="document.getElementById('avatar-form').submit()">
                     </form>

@@ -34,7 +34,7 @@
 <!-- Main Content -->
 <div class="main-content" id="main-content">
     <div class="main-header">
-        <h1 class="page-title">@yield('page-title', 'Dashboard')</h1>
+        <h1 class="page-title">@yield('page-title', '')</h1>
         @yield('header-actions')
     </div>
 

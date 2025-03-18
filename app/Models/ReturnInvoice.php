@@ -9,29 +9,28 @@ class ReturnInvoice extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
+        'user_id',
         'sales_invoice_id',
+        'total_amount',
+        'notes',
+        'created_at'
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'created_at' => 'datetime',
-    ];
+    public $timestamps = false;
 
-    /**
-     * Get the sales invoice that owns the return invoice.
-     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function salesInvoice()
     {
-        return $this->belongsTo(SalesInvoice::class, 'sales_invoice_id');
+        return $this->belongsTo(SalesInvoice::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(ReturnInvoiceDetail::class, 'return_invoice_id');
     }
 }

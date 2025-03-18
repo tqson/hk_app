@@ -154,7 +154,7 @@
                             </div>
 
                             <div class="pagination-size-selector">
-                                <span class="mr-2">Hiển thị:</span>
+                                <span class="me-2">Hiển thị:</span>
                                 <select id="page-size" class="form-control form-control-sm d-inline-block"
                                         style="width: auto;" onchange="changePageSize(this.value)">
                                     <option
@@ -165,7 +165,7 @@
                                     <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
                                     <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
                                 </select>
-                                <span class="ml-2">/ trang</span>
+                                <span class="ms-2">/ trang</span>
                             </div>
                         </div>
                     </div>

@@ -44,6 +44,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sales/invoices', [App\Http\Controllers\SalesController::class, 'invoiceList'])->name('sales.invoices');
     Route::get('/sales/invoices/{id}', [App\Http\Controllers\SalesController::class, 'invoiceDetail'])->name('sales.invoice-detail');
 
+    Route::get('/returns', [App\Http\Controllers\ReturnController::class, 'index'])->name('returns.index');
+    Route::get('/returns/create', [App\Http\Controllers\ReturnController::class, 'create'])->name('returns.create');
+    Route::post('/returns', [App\Http\Controllers\ReturnController::class, 'store'])->name('returns.store');
+    Route::get('/returns/{id}', [App\Http\Controllers\ReturnController::class, 'show'])->name('returns.show');
+
+    Route::get('/returns/search-invoices', [App\Http\Controllers\ReturnController::class, 'searchInvoices'])->name('returns.search-invoices');
+    Route::get('/returns/get-invoice-details/{id}', [App\Http\Controllers\ReturnController::class, 'getInvoiceDetails'])->name('returns.get-invoice-details');
+
     Route::resource('purchases', PurchaseController::class);
     Route::resource('suppliers', SupplierController::class);
 

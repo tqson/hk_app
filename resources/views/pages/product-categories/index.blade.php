@@ -2,7 +2,7 @@
 
 @section('title', 'Quản lý danh mục sản phẩm - HK LOVE')
 
-@section('page-title', 'Quản lý danh mục sản phẩm')
+{{--@section('page-title', 'Quản lý danh mục sản phẩm')--}}
 
 @section('content')
     <div class="container-fluid">

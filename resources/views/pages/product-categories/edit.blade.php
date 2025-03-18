@@ -2,8 +2,6 @@
 
 @section('title', 'Chỉnh sửa danh mục sản phẩm - HK LOVE')
 
-@section('page-title', 'Chỉnh sửa danh mục sản phẩm')
-
 @section('content')
     <div class="container-fluid">
         <div class="row">
