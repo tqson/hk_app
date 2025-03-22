@@ -9,62 +9,41 @@ class Product extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'category_id',
         'unit',
-        'batch_number',
-        'expiration_date',
         'status',
         'stock',
         'price',
-        'created_at'
+        'import_price',
+        'description',
+        'image',
+        'sku',
+        'barcode',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'expiration_date' => 'date',
-        'created_at' => 'datetime',
-    ];
-
-    /**
-     * Get the category that owns the product.
-     */
+    // Quan hệ với Category
     public function category()
     {
-        return $this->belongsTo(ProductCategory::class, 'category_id');
+        return $this->belongsTo(Category::class);
     }
 
-    /**
-     * Get the sales invoice details for the product.
-     */
-    public function salesInvoiceDetails()
+    // Quan hệ với ProductBatch
+    public function batches()
     {
-        return $this->hasMany(SalesInvoiceDetail::class);
+        return $this->hasMany(ProductBatch::class);
     }
 
-    /**
-     * Get the purchase invoice details for the product.
-     */
-    public function purchaseInvoiceDetails()
+    // Quan hệ với ImportItem
+    public function importItems()
     {
-        return $this->hasMany(PurchaseInvoiceDetail::class);
+        return $this->hasMany(ImportItem::class);
     }
 
-    /**
-     * Get the disposal records for the product.
-     */
-    public function disposalRecords()
+    // Lấy tổng số lượng tồn kho (bao gồm cả các lô)
+    public function getTotalStockAttribute()
     {
-        return $this->hasMany(DisposalRecord::class);
+        return $this->batches()->sum('quantity') + $this->stock;
     }
 }

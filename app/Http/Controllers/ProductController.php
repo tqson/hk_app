@@ -143,5 +143,16 @@ class ProductController extends Controller
         return redirect()->route('products.index')
             ->with('success', 'Sản phẩm đã được xóa thành công.');
     }
+
+
+    public function search(Request $request)
+    {
+        $query = $request->get('term');
+        $products = Product::where('name', 'like', "%{$query}%")
+            ->with('category')
+            ->get();
+
+        return response()->json($products);
+    }
 }
 

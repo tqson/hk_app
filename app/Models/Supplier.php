@@ -9,32 +9,30 @@ class Supplier extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
-        'phone',
-        'email',
+        'contact_person',
         'address',
+        'mobile',
+        'phone',
+        'tax_code',
+        'status'
     ];
 
     /**
-     * The attributes that should be cast.
+     * Kiểm tra nhà cung cấp có đang hoạt động không
      *
-     * @var array<string, string>
+     * @return bool
      */
-    protected $casts = [
-        'created_at' => 'datetime',
-    ];
-
-    /**
-     * Get the purchase invoices for the supplier.
-     */
-    public function purchaseInvoices()
+    public function isActive()
     {
-        return $this->hasMany(PurchaseInvoice::class);
+        return $this->status === 'active';
     }
+
+    public function imports()
+    {
+        return $this->hasMany(Import::class);
+    }
+
+
 }

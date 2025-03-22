@@ -27,10 +27,12 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('_return_invoices', function (Blueprint $table) {
-            $table->dropColumn('user_id');
-            $table->dropColumn('total_amount');
-            $table->dropColumn('notes');
+        Schema::table('return_invoices', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+        });
+
+        Schema::table('return_invoices', function (Blueprint $table) {
+            $table->dropColumn(['user_id', 'total_amount', 'notes']);
         });
     }
 };

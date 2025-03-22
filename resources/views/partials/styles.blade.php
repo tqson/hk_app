@@ -340,23 +340,6 @@
         transform: rotate(180deg);
     }
 
-    .sidebar-menu-item.active > .sidebar-menu-link {
-        background-color: rgba(255, 255, 255, 0.1);
-        font-weight: bold;
-    }
-
-    .sidebar-submenu-link.active {
-        background-color: rgba(255, 255, 255, 0.05);
-        color: #fff;
-        font-weight: bold;
-        border-left: 3px solid #4e73df;
-        padding-left: 17px;
-    }
-
-    .sidebar-menu-item.open .sidebar-submenu {
-        display: block;
-    }
-
     /* Main Content Styles */
     .main-content {
         margin-left: var(--sidebar-width);

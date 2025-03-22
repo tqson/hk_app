@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\ImportController;
+use App\Http\Controllers\ProductBatchController;
 use App\Http\Controllers\ProductCategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
@@ -8,7 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SaleController;
-use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\PurchaseInvoiceController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ReportController;
 
@@ -52,8 +54,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/returns/search-invoices', [App\Http\Controllers\ReturnController::class, 'searchInvoices'])->name('returns.search-invoices');
     Route::get('/returns/get-invoice-details/{id}', [App\Http\Controllers\ReturnController::class, 'getInvoiceDetails'])->name('returns.get-invoice-details');
 
-    Route::resource('purchases', PurchaseController::class);
+    // Supplier routes
     Route::resource('suppliers', SupplierController::class);
+    Route::patch('suppliers/{supplier}/toggle-status', [SupplierController::class, 'toggleStatus'])->name('suppliers.toggle-status');
+
+    // Import routes
+    Route::resource('imports', ImportController::class)->except(['edit', 'update', 'destroy']);
+    Route::get('imports/{import}/payment-history', [ImportController::class, 'paymentHistory'])->name('imports.payment-history');
+    Route::post('imports/{import}/update-payment', [ImportController::class, 'updatePayment'])->name('imports.update-payment');
+
+    // Product Batch routes
+    Route::post('product-batches', [ProductBatchController::class, 'store'])->name('product-batches.store');
+    Route::get('product-batches/by-product/{productId}', [ProductBatchController::class, 'getByProduct'])->name('product-batches.by-product');
+
+    // API routes for AJAX requests
+    Route::get('api/products/search', [ProductController::class, 'search'])->name('api.products.search');
+    Route::get('api/suppliers/search', [SupplierController::class, 'search'])->name('api.suppliers.search');
 
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 });

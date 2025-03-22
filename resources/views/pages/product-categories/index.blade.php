@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title', 'Quản lý danh mục sản phẩm - HK LOVE')
 

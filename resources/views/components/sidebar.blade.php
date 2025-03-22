@@ -60,6 +60,33 @@
                 </li>
             </ul>
         </li>
+
+        @php
+            $isPurchaseActive = Request::is('imports*') || Request::is('suppliers*');
+        @endphp
+        <li class="sidebar-menu-item {{ $isPurchaseActive ? 'active open' : '' }}">
+            <a href="#" class="sidebar-menu-link has-submenu {{ $isPurchaseActive ? 'active' : '' }}">
+                <i class="sidebar-menu-icon fas fa-truck"></i>
+                <span class="sidebar-menu-text">Nhập hàng</span>
+            </a>
+            <ul class="sidebar-submenu" style="{{ $isPurchaseActive ? 'display: block;' : '' }}">
+                <li>
+                    <a href="{{ route('imports.create') }}" class="sidebar-submenu-link {{ request()->routeIs('imports.create') ? 'active' : '' }}">
+                        <span>Tạo phiếu nhập</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('imports.index') }}" class="sidebar-submenu-link {{ request()->routeIs('imports.index') ? 'active' : '' }}">
+                        <span>Danh sách phiếu nhập</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('suppliers.index') }}" class="sidebar-submenu-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}">
+                        <span>Nhà cung cấp</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
 
     <div class="sidebar-toggle-container">
