@@ -11,21 +11,56 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('category');
+        $query = Product::with(['category', 'batches']);
 
-        // Search by product name
+        // Tìm kiếm theo tên sản phẩm, mã SKU hoặc mã vạch
         if ($request->has('search') && !empty($request->search)) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('sku', 'like', '%' . $search . '%')
+                    ->orWhere('barcode', 'like', '%' . $search . '%');
+            });
         }
 
-        // Order by created_at
-        $query->orderBy('created_at', 'desc');
+        // Lọc theo danh mục
+        if ($request->has('category_id') && !empty($request->category_id)) {
+            $query->where('category_id', $request->category_id);
+        }
 
-        // Pagination
-        $perPage = $request->input('perPage', 10); // Default to 10 items per page
+        // Lọc theo trạng thái
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+
+        // Lọc theo tồn kho
+        if ($request->has('stock_filter') && !empty($request->stock_filter)) {
+            if ($request->stock_filter === 'in_stock') {
+                $query->where('stock', '>', 0)
+                    ->orWhereHas('batches', function($q) {
+                        $q->where('quantity', '>', 0);
+                    });
+            } elseif ($request->stock_filter === 'out_of_stock') {
+                $query->where('stock', '<=', 0)
+                    ->whereDoesntHave('batches', function($q) {
+                        $q->where('quantity', '>', 0);
+                    });
+            }
+        }
+
+        // Sắp xếp
+        $sortField = $request->input('sort_field', 'created_at');
+        $sortDirection = $request->input('sort_direction', 'desc');
+        $query->orderBy($sortField, $sortDirection);
+
+        // Phân trang
+        $perPage = $request->input('perPage', 10); // Mặc định 10 sản phẩm mỗi trang
         $products = $query->paginate($perPage)->appends($request->except('page'));
 
-        return view('pages.products.index', compact('products'));
+        // Lấy danh sách danh mục cho bộ lọc
+        $categories = ProductCategory::all();
+
+        return view('pages.products.index', compact('products', 'categories'));
     }
 
     public function deactivate(Product $product)

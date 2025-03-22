@@ -75,7 +75,7 @@ class ImportController extends Controller
 
                 // Update product stock
                 $product = Product::find($item['product_id']);
-                $product->stock_quantity += $item['quantity'];
+                $product->stock += $item['quantity'];
                 $product->save();
             }
 
@@ -92,6 +92,7 @@ class ImportController extends Controller
             return redirect()->route('imports.index')->with('success', 'Hóa đơn nhập hàng đã được tạo thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
+            logger($e->getMessage());
             return back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage())->withInput();
         }
     }

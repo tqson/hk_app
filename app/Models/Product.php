@@ -26,7 +26,7 @@ class Product extends Model
     // Quan hệ với Category
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(ProductCategory::class);
     }
 
     // Quan hệ với ProductBatch

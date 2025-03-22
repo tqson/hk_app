@@ -6,19 +6,27 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        Schema::create('payment_histories', function (Blueprint $table) {
+        Schema::create('import_payment_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('import_id')->constrained()->onDelete('cascade');
-            $table->decimal('amount', 15, 2);
-            $table->decimal('remaining_debt', 15, 2);
+            $table->decimal('amount', 12, 2)->comment('Số tiền thanh toán');
+            $table->decimal('remaining_debt', 12, 2)->comment('Công nợ còn lại');
+            $table->string('payment_method')->nullable()->comment('Phương thức thanh toán');
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
-        Schema::dropIfExists('payment_histories');
+        Schema::dropIfExists('import_payment_histories');
     }
 };

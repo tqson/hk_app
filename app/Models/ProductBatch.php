@@ -14,6 +14,9 @@ class ProductBatch extends Model
         'batch_number',
         'manufacturing_date',
         'expiry_date',
+        'quantity',
+        'import_price',
+        'status',
     ];
 
     protected $casts = [

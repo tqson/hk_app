@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->constrained('product_categories')->onDelete('cascade');
             $table->string('unit')->comment('Đơn vị tính');
             $table->string('sku')->nullable()->unique()->comment('Mã sản phẩm');
             $table->string('barcode')->nullable()->unique()->comment('Mã vạch');
