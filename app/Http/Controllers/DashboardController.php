@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductBatch;
 use Illuminate\Http\Request;
 use App\Models\SalesInvoice;
 use Carbon\Carbon;
@@ -143,6 +144,19 @@ class DashboardController extends Controller
         $weeklyChartData = collect($weeklyRevenue);
         $monthlyChartData = collect($monthlyRevenue);
 
+        $today = now();
+        $startOfMonth = $today->copy()->startOfMonth();
+        $endOfMonth = $today->copy()->endOfMonth();
+
+        // Mặc định lấy các sản phẩm hết hạn trong tháng này
+        $expiringProducts = ProductBatch::with('product')
+            ->where('status', 'active')
+            ->where('quantity', '>', 0)
+            ->whereBetween('expiry_date', [$today, $endOfMonth])
+            ->orWhereBetween('expiry_date', [$startOfMonth, $endOfMonth])
+            ->orderBy('expiry_date')
+            ->get();
+
         return view('pages.dashboard', compact(
             'totalRevenue',
             'todayRevenue',
@@ -154,7 +168,8 @@ class DashboardController extends Controller
             'startDate',
             'endDate',
             'month',
-            'year'
+            'year',
+            'expiringProducts'
         ));
     }
 
@@ -227,5 +242,51 @@ class DashboardController extends Controller
             'month' => null,
             'year' => null
         ];
+    }
+
+    public function expiryFilter(Request $request)
+    {
+        $filter = $request->input('filter', 'current');
+        $today = now();
+
+        $query = ProductBatch::with('product')
+            ->where('status', 'active')
+            ->where('quantity', '>', 0);
+
+        switch ($filter) {
+            case 'current':
+                // Tháng này
+                $startOfMonth = $today->copy()->startOfMonth();
+                $endOfMonth = $today->copy()->endOfMonth();
+                $query->whereBetween('expiry_date', [$today, $endOfMonth]);
+                $query->orWhereBetween('expiry_date', [$startOfMonth, $endOfMonth]);
+                break;
+
+            case 'three':
+                // 3 tháng sau
+                $threeMonthsLater = $today->copy()->addMonths(3);
+                $query->whereBetween('expiry_date', [$today, $threeMonthsLater]);
+                break;
+
+            case 'six':
+                // 6 tháng sau
+                $sixMonthsLater = $today->copy()->addMonths(6);
+                $query->whereBetween('expiry_date', [$today, $sixMonthsLater]);
+                break;
+
+            case 'expired':
+                // Đã hết hạn
+                $query->where('expiry_date', '<', $today);
+                break;
+        }
+
+        $batches = $query->orderBy('expiry_date')->get();
+
+        // Thêm số ngày còn lại vào mỗi batch
+        $batches->each(function ($batch) use ($today) {
+            $batch->days_left = max(0, $today->diffInDays($batch->expiry_date, false));
+        });
+
+        return response()->json(['data' => $batches]);
     }
 }

@@ -1,5 +1,44 @@
 @extends('layouts.app')
 
+@section('styles')
+    <style>
+        .icon-circle {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bg-gradient-primary {
+            background: linear-gradient(to right, #4e73df, #224abe);
+        }
+
+        .bg-gradient-success {
+            background: linear-gradient(to right, #1cc88a, #13855c);
+        }
+
+        .bg-gradient-warning {
+            background: linear-gradient(to right, #f6c23e, #dda20a);
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .rounded-top {
+            border-top-left-radius: 0.35rem !important;
+            border-top-right-radius: 0.35rem !important;
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -22,7 +61,7 @@
                                         <input type="text" name="search" class="form-control"
                                                placeholder="Tìm kiếm theo mã hóa đơn..."
                                                value="{{ request('search') }}">
-                                        <div class="input-group-append">
+                                        <div class="ms-3 input-group-append">
                                             <button class="btn btn-primary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
@@ -35,32 +74,53 @@
                         <!-- Thống kê tổng nợ -->
                         <div class="row mb-4">
                             <div class="col-md-4">
-                                <div class="info-box bg-info">
-                                    <span class="info-box-icon"><i class="fas fa-money-bill-wave"></i></span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Tổng nợ NCC</span>
-                                        <span
-                                            class="info-box-number">{{ number_format($totalAmount, 0, ',', '.') }} VNĐ</span>
+                                <div class="card shadow-sm border-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="d-flex align-items-center p-3 bg-gradient-primary text-white rounded-top">
+                                            <div class="icon-circle bg-white text-primary mr-3">
+                                                <i class="fas fa-money-bill-wave fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 font-weight-bold">Tổng nợ NCC</h6>
+                                            </div>
+                                        </div>
+                                        <div class="p-3 text-center">
+                                            <h3 class="font-weight-bold mb-0">{{ number_format($totalAmount, 0, ',', '.') }} <small>VNĐ</small></h3>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="info-box bg-success">
-                                    <span class="info-box-icon"><i class="fas fa-check-circle"></i></span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Đã thanh toán</span>
-                                        <span
-                                            class="info-box-number">{{ number_format($totalPaid, 0, ',', '.') }} VNĐ</span>
+                                <div class="card shadow-sm border-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="d-flex align-items-center p-3 bg-gradient-success text-white rounded-top">
+                                            <div class="icon-circle bg-white text-success mr-3">
+                                                <i class="fas fa-check-circle fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 font-weight-bold">Đã thanh toán</h6>
+                                            </div>
+                                        </div>
+                                        <div class="p-3 text-center">
+                                            <h3 class="font-weight-bold mb-0 text-success">{{ number_format($totalPaid, 0, ',', '.') }} <small>VNĐ</small></h3>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="info-box bg-warning">
-                                    <span class="info-box-icon"><i class="fas fa-exclamation-circle"></i></span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Số tiền cần trả</span>
-                                        <span
-                                            class="info-box-number">{{ number_format($totalDebt, 0, ',', '.') }} VNĐ</span>
+                                <div class="card shadow-sm border-0 h-100">
+                                    <div class="card-body p-0">
+                                        <div class="d-flex align-items-center p-3 bg-gradient-warning text-white rounded-top">
+                                            <div class="icon-circle bg-white text-warning mr-3">
+                                                <i class="fas fa-exclamation-circle fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 font-weight-bold">Số tiền cần trả</h6>
+                                            </div>
+                                        </div>
+                                        <div class="p-3 text-center">
+                                            <h3 class="font-weight-bold mb-0 text-warning">{{ number_format($totalDebt, 0, ',', '.') }} <small>VNĐ</small></h3>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -176,7 +236,7 @@
     </div>
 @endsection
 
-@push('scripts')
+@section('scripts')
     <script>
         $(document).ready(function () {
             $('#paymentModal').on('show.bs.modal', function (event) {
@@ -222,4 +282,4 @@
             });
         });
     </script>
-@endpush
+@endsection

@@ -59,7 +59,6 @@ class SalesController extends Controller
             $invoice->created_at = now();
             $invoice->save();
 
-//            dd($request->products);
             // Tạo chi tiết hóa đơn
             $products = $request->products;
 

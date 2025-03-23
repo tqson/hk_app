@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('stock')->default(0)->comment('Số lượng tồn kho không theo lô');
             $table->text('description')->nullable()->comment('Mô tả sản phẩm');
             $table->string('image')->nullable()->comment('Hình ảnh sản phẩm');
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

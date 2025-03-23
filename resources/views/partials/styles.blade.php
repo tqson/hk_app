@@ -340,6 +340,33 @@
         transform: rotate(180deg);
     }
 
+    .sidebar-collapsed .has-submenu::after {
+        display: none;
+    }
+
+    /* Make sure all submenus are closed when sidebar is collapsed */
+    .sidebar-collapsed .sidebar-submenu {
+        display: none !important;
+    }
+
+    /* Ensure the sidebar-menu-item doesn't show as open when collapsed */
+    .sidebar-collapsed .sidebar-menu-item.open {
+        max-height: 48px;
+        overflow: hidden;
+    }
+
+    .tooltip {
+        z-index: 1080;
+    }
+
+    .sidebar-collapsed .tooltip {
+        display: block;
+    }
+
+    .sidebar:not(.sidebar-collapsed) .tooltip {
+        display: none !important;
+    }
+
     /* Main Content Styles */
     .main-content {
         margin-left: var(--sidebar-width);
@@ -537,4 +564,40 @@
     .pagination {
         justify-content: center;
     }
+
+    /* Custom Styles */
+    i.fas {
+        margin-right: 5px;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 6px 12px;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 12px;
+        text-transform: uppercase;
+    }
+
+    .badge-success {
+        background-color: #28a745; /* Màu xanh lá */
+        color: white;
+    }
+
+    .badge-danger {
+        background-color: #dc3545; /* Màu đỏ */
+        color: white;
+    }
+
+    .badge-warning {
+        background-color: #ffc107; /* Màu vàng */
+        color: black;
+    }
+
+    .badge-info {
+        background-color: #17a2b8; /* Màu xanh dương */
+        color: white;
+    }
+
 </style>

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductBatch;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -36,15 +38,19 @@ class ProductController extends Controller
         // Lọc theo tồn kho
         if ($request->has('stock_filter') && !empty($request->stock_filter)) {
             if ($request->stock_filter === 'in_stock') {
-                $query->where('stock', '>', 0)
-                    ->orWhereHas('batches', function($q) {
-                        $q->where('quantity', '>', 0);
-                    });
+                $query->where(function($q) {
+                    $q->where('stock', '>', 0)
+                        ->orWhereHas('batches', function($q) {
+                            $q->where('quantity', '>', 0);
+                        });
+                });
             } elseif ($request->stock_filter === 'out_of_stock') {
-                $query->where('stock', '<=', 0)
-                    ->whereDoesntHave('batches', function($q) {
-                        $q->where('quantity', '>', 0);
-                    });
+                $query->where(function($q) {
+                    $q->where('stock', '<=', 0)
+                        ->whereDoesntHave('batches', function($q) {
+                            $q->where('quantity', '>', 0);
+                        });
+                });
             }
         }
 
@@ -65,7 +71,7 @@ class ProductController extends Controller
 
     public function deactivate(Product $product)
     {
-        $product->status = false;
+        $product->status = 'inactive';
         $product->save();
 
         return redirect()->route('products.index')->with('success', 'Sản phẩm đã được dừng hoạt động thành công.');
@@ -73,7 +79,7 @@ class ProductController extends Controller
 
     public function activate(Product $product)
     {
-        $product->status = true;
+        $product->status = 'active';
         $product->save();
 
         return redirect()->route('products.index')->with('success', 'Sản phẩm đã được kích hoạt thành công.');
@@ -91,9 +97,19 @@ class ProductController extends Controller
             'name' => 'required|max:255',
             'category_id' => 'required|exists:product_categories,id',
             'unit' => 'required|max:50',
-            'batch_number' => 'required|max:50',
-            'expiration_date' => 'required|date|after:today',
-            'stock' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
+            'import_price' => 'required|numeric|min:0',
+            'sku' => 'required|unique:products,sku',
+            'barcode' => 'nullable|unique:products,barcode',
+            'description' => 'nullable',
+            'image' => 'nullable|image|max:2048',
+            'status' => 'required',
+
+            // Thông tin lô hàng ban đầu (nếu có)
+            'batch_number' => 'nullable|max:50',
+            'manufacturing_date' => 'nullable|date',
+            'expiry_date' => 'nullable|date|after:manufacturing_date',
+            'stock' => 'nullable|integer|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -102,15 +118,39 @@ class ProductController extends Controller
                 ->withInput();
         }
 
-        Product::create([
+        // Xử lý upload hình ảnh
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        // Tạo sản phẩm mới
+        $product = Product::create([
             'name' => $request->name,
             'category_id' => $request->category_id,
             'unit' => $request->unit,
-            'batch_number' => $request->batch_number,
-            'expiration_date' => $request->expiration_date,
-            'stock' => $request->stock,
-            'created_at' => now()
+            'price' => $request->price,
+            'import_price' => $request->import_price,
+            'sku' => $request->sku,
+            'barcode' => $request->barcode,
+            'description' => $request->description,
+            'image' => $imagePath,
+            'status' => $request->status ?? 'active',
+            'stock' => $request->stock ?? 0,
         ]);
+
+        // Tạo lô hàng ban đầu nếu có thông tin
+        if ($request->filled('batch_number') && $request->filled('expiry_date')) {
+            ProductBatch::create([
+                'product_id' => $product->id,
+                'batch_number' => $request->batch_number,
+                'manufacturing_date' => $request->manufacturing_date,
+                'expiry_date' => $request->expiry_date,
+                'quantity' => $request->stock ?? 0,
+                'import_price' => $request->import_price,
+                'status' => 'active',
+            ]);
+        }
 
         return redirect()->route('products.index')
             ->with('success', 'Sản phẩm đã được tạo thành công.');
@@ -118,14 +158,23 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with('category')->findOrFail($id);
+        // Tải sản phẩm cùng với các quan hệ cần thiết
+        $product = Product::with(['batches', 'category', 'importItems.import.supplier', 'importItems.batch'])
+            ->findOrFail($id);
+
         return view('pages.products.show', compact('product'));
     }
 
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        // Load the product with its batches relationship
+        $product = Product::with('batches')->findOrFail($id);
+
+        // Load all product categories for the dropdown
         $categories = ProductCategory::all();
+
+        // Return the view with the data
+        // Note: Changed from 'pages.products.edit' to 'products.edit' to match your view structure
         return view('pages.products.edit', compact('product', 'categories'));
     }
 
@@ -137,9 +186,18 @@ class ProductController extends Controller
             'name' => 'required|max:255',
             'category_id' => 'required|exists:product_categories,id',
             'unit' => 'required|max:50',
-            'batch_number' => 'required|max:50',
-            'expiration_date' => 'required|date',
-            'stock' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
+            'sku' => 'required|unique:products,sku,'.$id,
+            'barcode' => 'nullable|unique:products,barcode,'.$id,
+            'description' => 'nullable',
+            'image' => 'nullable|image|max:2048',
+            'status' => 'required',
+            'batches.*.batch_number' => 'required|string|max:50',
+            'batches.*.manufacturing_date' => 'required|date',
+            'batches.*.expiry_date' => 'required|date|after:batches.*.manufacturing_date',
+            'batches.*.quantity' => 'required|numeric|min:0',
+            'batches.*.import_price' => 'required|numeric|min:0',
+            'batches.*.status' => 'required|in:active,inactive',
         ]);
 
         if ($validator->fails()) {
@@ -148,14 +206,62 @@ class ProductController extends Controller
                 ->withInput();
         }
 
+        // Handle image upload if a new image is provided
+        if ($request->hasFile('image')) {
+            // Delete old image if it exists
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            // Store the new image
+            $imagePath = $request->file('image')->store('products', 'public');
+            $product->image = $imagePath;
+        }
+
+        // Update product details
         $product->update([
             'name' => $request->name,
             'category_id' => $request->category_id,
             'unit' => $request->unit,
-            'batch_number' => $request->batch_number,
-            'expiration_date' => $request->expiration_date,
-            'stock' => $request->stock,
+            'price' => $request->price,
+            'sku' => $request->sku,
+            'barcode' => $request->barcode,
+            'description' => $request->description,
+            'status' => $request->status,
         ]);
+
+        // Handle batches
+        if ($request->has('batches')) {
+            foreach ($request->batches as $batchData) {
+                if (isset($batchData['id'])) {
+                    // Update existing batch
+                    $batch = ProductBatch::findOrFail($batchData['id']);
+                    $batch->update([
+                        'batch_number' => $batchData['batch_number'],
+                        'manufacturing_date' => $batchData['manufacturing_date'],
+                        'expiry_date' => $batchData['expiry_date'],
+                        'quantity' => $batchData['quantity'],
+                        'import_price' => $batchData['import_price'],
+                        'status' => $batchData['status'],
+                    ]);
+                } else {
+                    // Create new batch
+                    $product->batches()->create([
+                        'batch_number' => $batchData['batch_number'],
+                        'manufacturing_date' => $batchData['manufacturing_date'],
+                        'expiry_date' => $batchData['expiry_date'],
+                        'quantity' => $batchData['quantity'],
+                        'import_price' => $batchData['import_price'],
+                        'status' => $batchData['status'],
+                    ]);
+                }
+            }
+        }
+
+        // Handle batch deletion
+        if ($request->has('delete_batches')) {
+            ProductBatch::whereIn('id', $request->delete_batches)->delete();
+        }
 
         return redirect()->route('products.index')
             ->with('success', 'Sản phẩm đã được cập nhật thành công.');
@@ -167,10 +273,15 @@ class ProductController extends Controller
 
         // Kiểm tra xem sản phẩm có liên quan đến hóa đơn không
         if ($product->salesInvoiceDetails()->count() > 0 ||
-            $product->purchaseInvoiceDetails()->count() > 0 ||
-            $product->disposalRecords()->count() > 0) {
+            $product->importItems()->count() > 0 ||
+            $product->batches()->count() > 0) {
             return redirect()->route('products.index')
                 ->with('error', 'Không thể xóa sản phẩm này vì có dữ liệu liên quan.');
+        }
+
+        // Xóa hình ảnh nếu có
+        if ($product->image) {
+            Storage::disk('public')->delete($product->image);
         }
 
         $product->delete();
@@ -179,15 +290,70 @@ class ProductController extends Controller
             ->with('success', 'Sản phẩm đã được xóa thành công.');
     }
 
-
     public function search(Request $request)
     {
         $query = $request->get('term');
         $products = Product::where('name', 'like', "%{$query}%")
-            ->with('category')
+            ->orWhere('sku', 'like', "%{$query}%")
+            ->orWhere('barcode', 'like', "%{$query}%")
+            ->with(['category', 'batches'])
+            ->where('status', 'active')
             ->get();
 
         return response()->json($products);
     }
-}
 
+    /**
+     * Lấy thông tin chi tiết sản phẩm và các lô còn hàng
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getBatches($id)
+    {
+        $product = Product::findOrFail($id);
+
+        // Lấy các lô còn hàng
+        $batches = ProductBatch::where('product_id', $id)
+            ->where('quantity', '>', 0)
+            ->orderBy('expiry_date')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'product' => $product,
+            'batches' => $batches
+        ]);
+    }
+
+    /**
+     * Cập nhật số lượng tồn kho của sản phẩm
+     *
+     * @param  Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateStock(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'stock' => 'required|integer|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $product = Product::findOrFail($id);
+        $product->stock = $request->stock;
+        $product->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cập nhật tồn kho thành công',
+            'product' => $product
+        ]);
+    }
+}

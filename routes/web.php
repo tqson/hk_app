@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\DisposalInvoiceController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductBatchController;
 use App\Http\Controllers\ProductCategoryController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +26,7 @@ Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logou
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/expiry-filter', [DashboardController::class, 'expiryFilter'])->name('dashboard.expiry-filter');
 
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -67,9 +70,30 @@ Route::middleware(['auth'])->group(function () {
     Route::post('product-batches', [ProductBatchController::class, 'store'])->name('product-batches.store');
     Route::get('product-batches/by-product/{productId}', [ProductBatchController::class, 'getByProduct'])->name('product-batches.by-product');
 
+    // Inventory Management
+    Route::prefix('inventory')->group(function () {
+        Route::get('/', [InventoryController::class, 'index'])->name('inventory.index');
+    });
+
+    // Disposal Invoice
+    Route::prefix('disposal')->group(function () {
+        Route::get('/', [DisposalInvoiceController::class, 'index'])->name('disposal.index');
+        Route::get('/create', [DisposalInvoiceController::class, 'create'])->name('disposal.create');
+        Route::post('/', [DisposalInvoiceController::class, 'store'])->name('disposal.store');
+        Route::get('/{disposal}', [DisposalInvoiceController::class, 'show'])->name('disposal.show');
+        Route::get('/product/{productId}/batches', [DisposalInvoiceController::class, 'getProductBatches'])->name('disposal.product.batches');
+    });
+
     // API routes for AJAX requests
-    Route::get('api/products/search', [ProductController::class, 'search'])->name('api.products.search');
+//    Route::get('api/products/search', [ProductController::class, 'search'])->name('api.products.search');
     Route::get('api/suppliers/search', [SupplierController::class, 'search'])->name('api.suppliers.search');
 
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+
+    // API routes
+    Route::prefix('api')->name('api.')->middleware(['auth'])->group(function () {
+        // Tìm kiếm sản phẩm
+        Route::get('/products/search', [App\Http\Controllers\ProductController::class, 'search'])->name('products.search');
+        Route::get('/products/{id}/batches', [App\Http\Controllers\ProductController::class, 'getBatches'])->name('products.batches');
+    });
 });

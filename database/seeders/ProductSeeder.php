@@ -25,7 +25,7 @@ class ProductSeeder extends Seeder
                 'price' => 120000,
                 'import_price' => 80000,
                 'description' => 'Thuốc kháng sinh điều trị nhiễm khuẩn đường hô hấp, tiết niệu, da và mô mềm.',
-                'status' => 'active',
+                'status' => true,
             ],
             [
                 'name' => 'Cefixime',
@@ -36,7 +36,7 @@ class ProductSeeder extends Seeder
                 'price' => 150000,
                 'import_price' => 100000,
                 'description' => 'Thuốc kháng sinh điều trị nhiễm khuẩn đường hô hấp, tiết niệu.',
-                'status' => 'active',
+                'status' => true,
             ],
             [
                 'name' => 'Azithromycin',
@@ -47,7 +47,7 @@ class ProductSeeder extends Seeder
                 'price' => 180000,
                 'import_price' => 120000,
                 'description' => 'Thuốc kháng sinh nhóm macrolide điều trị nhiễm khuẩn đường hô hấp, da và mô mềm.',
-                'status' => 'active',
+                'status' => true,
             ],
 
             // Thuốc giảm đau (category_id: 2)
@@ -60,7 +60,7 @@ class ProductSeeder extends Seeder
                 'price' => 50000,
                 'import_price' => 30000,
                 'description' => 'Thuốc giảm đau, hạ sốt thông dụng.',
-                'status' => 'active',
+                'status' => true,
             ],
             [
                 'name' => 'Ibuprofen',
@@ -71,7 +71,7 @@ class ProductSeeder extends Seeder
                 'price' => 70000,
                 'import_price' => 45000,
                 'description' => 'Thuốc giảm đau, kháng viêm không steroid.',
-                'status' => 'active',
+                'status' => true,
             ],
 
             // Thuốc hạ sốt (category_id: 3)
@@ -84,7 +84,7 @@ class ProductSeeder extends Seeder
                 'price' => 85000,
                 'import_price' => 55000,
                 'description' => 'Thuốc hạ sốt dạng viên sủi, chứa paracetamol.',
-                'status' => 'active',
+                'status' => true,
             ],
 
             // Thuốc chống viêm (category_id: 4)
@@ -97,7 +97,7 @@ class ProductSeeder extends Seeder
                 'price' => 120000,
                 'import_price' => 80000,
                 'description' => 'Thuốc chống viêm corticosteroid.',
-                'status' => 'active',
+                'status' => true,
             ],
             [
                 'name' => 'Diclofenac',
@@ -108,7 +108,7 @@ class ProductSeeder extends Seeder
                 'price' => 65000,
                 'import_price' => 40000,
                 'description' => 'Thuốc kháng viêm không steroid, giảm đau.',
-                'status' => 'active',
+                'status' => true,
             ],
 
             // Thuốc tiêu hóa (category_id: 5)
@@ -121,7 +121,7 @@ class ProductSeeder extends Seeder
                 'price' => 95000,
                 'import_price' => 60000,
                 'description' => 'Thuốc ức chế bơm proton, điều trị loét dạ dày, trào ngược dạ dày thực quản.',
-                'status' => 'active',
+                'status' => true,
             ],
             [
                 'name' => 'Mebeverine',
@@ -132,7 +132,7 @@ class ProductSeeder extends Seeder
                 'price' => 110000,
                 'import_price' => 70000,
                 'description' => 'Thuốc điều trị hội chứng ruột kích thích.',
-                'status' => 'active',
+                'status' => true,
             ],
 
             // Thuốc tim mạch (category_id: 6)
@@ -145,7 +145,7 @@ class ProductSeeder extends Seeder
                 'price' => 60000,
                 'import_price' => 35000,
                 'description' => 'Thuốc chống kết tập tiểu cầu, dự phòng các bệnh tim mạch.',
-                'status' => 'active',
+                'status' => true,
             ],
             [
                 'name' => 'Atorvastatin',
@@ -156,7 +156,7 @@ class ProductSeeder extends Seeder
                 'price' => 130000,
                 'import_price' => 85000,
                 'description' => 'Thuốc hạ lipid máu, điều trị tăng cholesterol.',
-                'status' => 'active',
+                'status' => true,
             ],
 
             // Thuốc huyết áp (category_id: 7)
@@ -169,7 +169,7 @@ class ProductSeeder extends Seeder
                 'price' => 75000,
                 'import_price' => 45000,
                 'description' => 'Thuốc chẹn kênh canxi, điều trị tăng huyết áp.',
-                'status' => 'active',
+                'status' => true,
             ],
             [
                 'name' => 'Losartan',
@@ -180,7 +180,7 @@ class ProductSeeder extends Seeder
                 'price' => 90000,
                 'import_price' => 55000,
                 'description' => 'Thuốc đối kháng thụ thể angiotensin II, điều trị tăng huyết áp.',
-                'status' => 'active',
+                'status' => true,
             ],
 
             // Thuốc tiểu đường (category_id: 8)
@@ -193,7 +193,7 @@ class ProductSeeder extends Seeder
                 'price' => 65000,
                 'import_price' => 40000,
                 'description' => 'Thuốc điều trị đái tháo đường type 2.',
-                'status' => 'active',
+                'status' => true,
             ],
             [
                 'name' => 'Gliclazide',
@@ -204,7 +204,7 @@ class ProductSeeder extends Seeder
                 'price' => 85000,
                 'import_price' => 55000,
                 'description' => 'Thuốc hạ đường huyết nhóm sulfonylurea.',
-                'status' => 'active',
+                'status' => true,
             ],
 
             // Vitamin và khoáng chất (category_id: 9)
@@ -217,7 +217,7 @@ class ProductSeeder extends Seeder
                 'price' => 55000,
                 'import_price' => 30000,
                 'description' => 'Vitamin C bổ sung, tăng cường miễn dịch.',
-                'status' => 'active',
+                'status' => true,
             ],
             [
                 'name' => 'Vitamin D3',
@@ -228,7 +228,7 @@ class ProductSeeder extends Seeder
                 'price' => 70000,
                 'import_price' => 45000,
                 'description' => 'Vitamin D3 bổ sung, hỗ trợ hấp thu canxi.',
-                'status' => 'active',
+                'status' => true,
             ],
             [
                 'name' => 'Calcium',
@@ -239,7 +239,7 @@ class ProductSeeder extends Seeder
                 'price' => 65000,
                 'import_price' => 40000,
                 'description' => 'Bổ sung canxi, phòng ngừa loãng xương.',
-                'status' => 'active',
+                'status' => true,
             ],
 
             // Thuốc da liễu (category_id: 10)
@@ -252,7 +252,7 @@ class ProductSeeder extends Seeder
                 'price' => 120000,
                 'import_price' => 75000,
                 'description' => 'Kem bôi chứa corticosteroid, điều trị viêm da.',
-                'status' => 'active',
+                'status' => true,
             ],
             [
                 'name' => 'Clotrimazole',
@@ -263,7 +263,7 @@ class ProductSeeder extends Seeder
                 'price' => 85000,
                 'import_price' => 50000,
                 'description' => 'Kem bôi kháng nấm, điều trị nấm da.',
-                'status' => 'active',
+                'status' => true,
             ],
         ];
 

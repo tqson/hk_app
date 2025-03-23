@@ -9,6 +9,8 @@ class PaymentHistory extends Model
 {
     use HasFactory;
 
+    protected $table = 'import_payment_histories';
+
     protected $fillable = [
         'import_id',
         'amount',

@@ -266,7 +266,7 @@
                         <div class="form-group">
                             <label for="payment_amount">Số tiền thanh toán (VNĐ):</label>
                             <input type="number" class="form-control" id="payment_amount" name="payment_amount"
-                                   min="0.01" max="{{ $import->debt_amount }}" step="1000" required>
+                                   min="1" max="{{ $import->debt_amount }}" required>
                             <small class="text-danger" id="payment_error"></small>
                         </div>
                     </div>
@@ -283,13 +283,15 @@
     </div>
 @endsection
 
-@push('scripts')
+@section('scripts')
     <script>
         $(document).ready(function () {
             $('#payment_amount').on('input', function () {
-                var payment = parseFloat($(this).val()) || 0;
-                var debtAmount = {{ $import->debt_amount }};
+                const payment = parseFloat($(this).val()) || 0;
+                const debtAmount = {{ $import->debt_amount }};
 
+                console.log(payment);
+                console.log(debtAmount);
                 if (payment > debtAmount) {
                     $('#payment_error').text('Số tiền thanh toán không được vượt quá công nợ hiện tại');
                     $('#confirmPaymentBtn').prop('disabled', true);
@@ -303,5 +305,5 @@
             });
         });
     </script>
-@endpush
+@endsection
 

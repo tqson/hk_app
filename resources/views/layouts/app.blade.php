@@ -36,10 +36,10 @@
 
 <!-- Main Content -->
 <div class="main-content" id="main-content">
-    <div class="main-header">
-        <h1 class="page-title">@yield('page-title', '')</h1>
-        @yield('header-actions')
-    </div>
+{{--    <div class="main-header">--}}
+{{--        <h1 class="page-title">@yield('page-title', '')</h1>--}}
+{{--        @yield('header-actions')--}}
+{{--    </div>--}}
 
     @yield('content')
 </div>
