@@ -71,7 +71,7 @@ class ProductController extends Controller
 
     public function deactivate(Product $product)
     {
-        $product->status = 'inactive';
+        $product->status = false;
         $product->save();
 
         return redirect()->route('products.index')->with('success', 'Sản phẩm đã được dừng hoạt động thành công.');
@@ -79,7 +79,7 @@ class ProductController extends Controller
 
     public function activate(Product $product)
     {
-        $product->status = 'active';
+        $product->status = true;
         $product->save();
 
         return redirect()->route('products.index')->with('success', 'Sản phẩm đã được kích hoạt thành công.');
@@ -135,7 +135,7 @@ class ProductController extends Controller
             'barcode' => $request->barcode,
             'description' => $request->description,
             'image' => $imagePath,
-            'status' => $request->status ?? 'active',
+            'status' => $request->status ?? true,
             'stock' => $request->stock ?? 0,
         ]);
 
@@ -197,7 +197,7 @@ class ProductController extends Controller
             'batches.*.expiry_date' => 'required|date|after:batches.*.manufacturing_date',
             'batches.*.quantity' => 'required|numeric|min:0',
             'batches.*.import_price' => 'required|numeric|min:0',
-            'batches.*.status' => 'required|in:active,inactive',
+            'batches.*.status' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -297,7 +297,7 @@ class ProductController extends Controller
             ->orWhere('sku', 'like', "%{$query}%")
             ->orWhere('barcode', 'like', "%{$query}%")
             ->with(['category', 'batches'])
-            ->where('status', 'active')
+            ->where('status', true)
             ->get();
 
         return response()->json($products);

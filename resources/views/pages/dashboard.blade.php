@@ -4,46 +4,6 @@
 
 @section('page-title', 'Dashboard')
 
-@section('header-actions')
-    <div class="filter-form">
-        <form action="{{ route('dashboard') }}" method="GET" class="d-flex align-items-center flex-wrap">
-            <!-- Date range filter -->
-            <div class="form-group me-2 mb-2">
-                <label for="start_date" class="me-2">Từ:</label>
-                <input type="text" class="form-control datepicker" id="start_date" name="start_date" value="{{ $startDate ?? '' }}">
-            </div>
-            <div class="form-group me-2 mb-2">
-                <label for="end_date" class="me-2">Đến:</label>
-                <input type="text" class="form-control datepicker" id="end_date" name="end_date" value="{{ $endDate ?? '' }}">
-            </div>
-
-            <!-- Month filter -->
-            <div class="form-group me-2 mb-2">
-                <label for="month" class="me-2">Tháng:</label>
-                <select class="form-select" id="month" name="month">
-                    <option value="">Chọn tháng</option>
-                    @for ($i = 1; $i <= 12; $i++)
-                        <option value="{{ $i }}" {{ (request('month') == $i) ? 'selected' : '' }}>Tháng {{ $i }}</option>
-                    @endfor
-                </select>
-            </div>
-
-            <!-- Year filter -->
-            <div class="form-group me-2 mb-2">
-                <label for="year" class="me-2">Năm:</label>
-                <select class="form-select" id="year" name="year">
-                    <option value="">Chọn năm</option>
-                    @for ($i = date('Y'); $i >= date('Y') - 5; $i--)
-                        <option value="{{ $i }}" {{ (request('year') == $i) ? 'selected' : '' }}>{{ $i }}</option>
-                    @endfor
-                </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary mb-2">Lọc</button>
-        </form>
-    </div>
-@endsection
-
 @section('content')
     <div class="row">
         <!-- Today's Revenue -->
@@ -97,6 +57,45 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="filter-form">
+        <form action="{{ route('dashboard') }}" method="GET" class="d-flex align-items-center flex-wrap">
+            <!-- Date range filter -->
+            <div class="form-group me-2 mb-2">
+                <label for="start_date" class="me-2">Từ:</label>
+                <input type="text" class="form-control datepicker" id="start_date" name="start_date" value="{{ $startDate ?? '' }}">
+            </div>
+            <div class="form-group me-2 mb-2">
+                <label for="end_date" class="me-2">Đến:</label>
+                <input type="text" class="form-control datepicker" id="end_date" name="end_date" value="{{ $endDate ?? '' }}">
+            </div>
+
+            <!-- Month filter -->
+            <div class="form-group me-2 mb-2">
+                <label for="month" class="me-2">Tháng:</label>
+                <select class="form-select" id="month" name="month">
+                    <option value="">Chọn tháng</option>
+                    @for ($i = 1; $i <= 12; $i++)
+                        <option value="{{ $i }}" {{ (request('month') == $i) ? 'selected' : '' }}>Tháng {{ $i }}</option>
+                    @endfor
+                </select>
+            </div>
+
+            <!-- Year filter -->
+            <div class="form-group me-2 mb-2">
+                <label for="year" class="me-2">Năm:</label>
+                <select class="form-select" id="year" name="year">
+                    <option value="">Chọn năm</option>
+                    @for ($i = date('Y'); $i >= date('Y') - 5; $i--)
+                        <option value="{{ $i }}" {{ (request('year') == $i) ? 'selected' : '' }}>{{ $i }}</option>
+                    @endfor
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary mb-2">Lọc</button>
+        </form>
     </div>
 
     <!-- Daily Revenue Chart -->
@@ -219,6 +218,110 @@
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Lấy các phần tử
+            const monthSelect = document.getElementById('month');
+            const yearSelect = document.getElementById('year');
+            const startDateInput = document.getElementById('start_date');
+            const endDateInput = document.getElementById('end_date');
+
+            // Hàm định dạng ngày thành dd/mm/yyyy
+            function formatDate(date) {
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}-${month}-${year}`;
+            }
+
+            // Hàm lấy ngày đầu tiên của tháng
+            function getFirstDayOfMonth(year, month) {
+                return new Date(year, month - 1, 1);
+            }
+
+            // Hàm lấy ngày cuối cùng của tháng
+            function getLastDayOfMonth(year, month) {
+                return new Date(year, month, 0);
+            }
+
+            // Hàm lấy ngày đầu tiên của năm
+            function getFirstDayOfYear(year) {
+                return new Date(year, 0, 1);
+            }
+
+            // Hàm lấy ngày cuối cùng của năm
+            function getLastDayOfYear(year) {
+                return new Date(year, 11, 31);
+            }
+
+            // Hàm cập nhật ngày dựa trên tháng và năm đã chọn
+            function updateDates() {
+                const selectedMonth = monthSelect.value;
+                const selectedYear = yearSelect.value;
+
+                // Nếu cả tháng và năm đều được chọn
+                if (selectedMonth && selectedYear) {
+                    const firstDay = getFirstDayOfMonth(selectedYear, selectedMonth);
+                    const lastDay = getLastDayOfMonth(selectedYear, selectedMonth);
+
+                    startDateInput.value = formatDate(firstDay);
+                    endDateInput.value = formatDate(lastDay);
+                }
+                // Nếu chỉ năm được chọn
+                else if (selectedYear && !selectedMonth) {
+                    const firstDay = getFirstDayOfYear(selectedYear);
+                    const lastDay = getLastDayOfYear(selectedYear);
+
+                    startDateInput.value = formatDate(firstDay);
+                    endDateInput.value = formatDate(lastDay);
+                }
+                // Nếu chỉ tháng được chọn (sử dụng năm hiện tại)
+                else if (selectedMonth && !selectedYear) {
+                    const currentYear = new Date().getFullYear();
+                    const firstDay = getFirstDayOfMonth(currentYear, selectedMonth);
+                    const lastDay = getLastDayOfMonth(currentYear, selectedMonth);
+
+                    startDateInput.value = formatDate(firstDay);
+                    endDateInput.value = formatDate(lastDay);
+
+                    // Tự động chọn năm hiện tại trong dropdown
+                    yearSelect.value = currentYear;
+                }
+                // Nếu không có gì được chọn, sử dụng tháng hiện tại
+                else if (!selectedMonth && !selectedYear) {
+                    const today = new Date();
+                    const currentYear = today.getFullYear();
+                    const currentMonth = today.getMonth() + 1;
+
+                    const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
+                    const lastDay = getLastDayOfMonth(currentYear, currentMonth);
+
+                    startDateInput.value = formatDate(firstDay);
+                    endDateInput.value = formatDate(lastDay);
+                }
+            }
+
+            // Thêm sự kiện change cho select tháng và năm
+            monthSelect.addEventListener('change', updateDates);
+            yearSelect.addEventListener('change', updateDates);
+
+            // Kiểm tra nếu form được load với tháng/năm đã chọn
+            if ((monthSelect.value || yearSelect.value) && (!startDateInput.value || !endDateInput.value)) {
+                updateDates();
+            }
+
+            // Nếu không có ngày nào được chọn khi trang tải, đặt mặc định là tháng hiện tại
+            if (!startDateInput.value && !endDateInput.value && !monthSelect.value && !yearSelect.value) {
+                const today = new Date();
+                const currentYear = today.getFullYear();
+                const currentMonth = today.getMonth() + 1;
+
+                // Cập nhật giá trị select
+                monthSelect.value = currentMonth;
+                yearSelect.value = currentYear;
+
+                // Cập nhật ngày
+                updateDates();
+            }
+
             // Daily Revenue Chart - Changed to bar chart
             const dailyChartCtx = document.getElementById('dailyRevenueChart').getContext('2d');
             const dailyRevenueChart = new Chart(dailyChartCtx, {

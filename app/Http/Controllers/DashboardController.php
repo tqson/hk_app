@@ -152,8 +152,8 @@ class DashboardController extends Controller
         $expiringProducts = ProductBatch::with('product')
             ->where('status', 'active')
             ->where('quantity', '>', 0)
-            ->whereBetween('expiry_date', [$today, $endOfMonth])
-            ->orWhereBetween('expiry_date', [$startOfMonth, $endOfMonth])
+//            ->whereBetween('expiry_date', [$today, $endOfMonth])
+            ->whereBetween('expiry_date', [$startOfMonth, $endOfMonth])
             ->orderBy('expiry_date')
             ->get();
 
@@ -258,8 +258,8 @@ class DashboardController extends Controller
                 // Tháng này
                 $startOfMonth = $today->copy()->startOfMonth();
                 $endOfMonth = $today->copy()->endOfMonth();
-                $query->whereBetween('expiry_date', [$today, $endOfMonth]);
-                $query->orWhereBetween('expiry_date', [$startOfMonth, $endOfMonth]);
+//                $query->whereBetween('expiry_date', [$today, $endOfMonth]);
+                $query->whereBetween('expiry_date', [$startOfMonth, $endOfMonth]);
                 break;
 
             case 'three':

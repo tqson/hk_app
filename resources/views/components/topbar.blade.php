@@ -18,12 +18,10 @@
             <!-- Dropdown menu -->
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li>
-                    <a class="dropdown-item" href="{{ route('profile.show') }}">
+                    <a class="dropdown-item" href="{{ route('profile.show') }}"
+                       onclick="event.preventDefault(); window.location.href='{{ route('profile.show') }}';">
                         <i class="fas fa-user me-2"></i> Thông tin cá nhân
                     </a>
-                </li>
-                <li>
-                    <hr class="dropdown-divider">
                 </li>
                 <li>
                     <form method="POST" action="{{ route('logout') }}" id="logout-form">

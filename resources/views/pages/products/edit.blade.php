@@ -216,18 +216,18 @@
 @section('scripts')
     <script>
         // Image preview
-        document.getElementById('image').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const preview = document.getElementById('imagePreview');
-                    preview.innerHTML = `<img src="${event.target.result}" class="img-thumbnail mt-2" style="max-height: 200px;">`;
-                }
-                reader.readAsDataURL(file);
-                document.querySelector('.custom-file-label').textContent = file.name;
-            }
-        });
+        // document.getElementById('image').addEventListener('change', function(e) {
+        //     const file = e.target.files[0];
+        //     if (file) {
+        //         const reader = new FileReader();
+        //         reader.onload = function(event) {
+        //             const preview = document.getElementById('imagePreview');
+        //             preview.innerHTML = `<img src="${event.target.result}" class="img-thumbnail mt-2" style="max-height: 200px;">`;
+        //         }
+        //         reader.readAsDataURL(file);
+        //         document.querySelector('.custom-file-label').textContent = file.name;
+        //     }
+        // });
 
         // Add new batch
         let batchIndex = {{ count($product->batches) }};
