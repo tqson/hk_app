@@ -95,6 +95,8 @@
             </div>
 
             <button type="submit" class="btn btn-primary mb-2">Lọc</button>
+
+            <a href="{{ route('dashboard') }}" class="btn btn-secondary mb-2 ms-2">Reset</a>
         </form>
     </div>
 

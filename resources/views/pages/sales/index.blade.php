@@ -391,17 +391,32 @@
 
             // Tính tiền thừa
             function calculateChange() {
+                console.log('calculateChange called');
                 const finalAmount = totalAmount - (parseFloat($('#discount').val()) || 0);
                 const cashAmount = parseFloat($('#cashAmount').val()) || 0;
+                const transferAmount = parseFloat($('#transferAmount').val()) || 0;
 
+                // If using cash payment
                 if (cashAmount > 0) {
                     const change = cashAmount - finalAmount;
                     $('#changeAmount').val(formatCurrency(change >= 0 ? change : 0));
 
                     // Enable payment button only if cash is enough
                     $('#paymentBtn').prop('disabled', change < 0);
-                } else {
+                }
+                // If using transfer payment
+                else if (transferAmount > 0) {
+                    console.log('else')
+                    const change = transferAmount - finalAmount;
+                    $('#changeAmount').val(formatCurrency(change >= 0 ? change : 0));
+
+                    // Enable payment button only if transfer amount is enough
+                    $('#paymentBtn').prop('disabled', transferAmount < finalAmount);
+                }
+                // No payment method has a value
+                else {
                     $('#changeAmount').val(formatCurrency(0));
+                    $('#paymentBtn').prop('disabled', true);
                 }
             }
 
