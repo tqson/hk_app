@@ -285,7 +285,7 @@ class ProductSeeder extends Seeder
         $batchCount = rand(2, 3);
 
         for ($i = 1; $i <= $batchCount; $i++) {
-            // Tạo mã lô dựa trên SKU sản phẩm
+            // Tạo mã lô dựa trên Mã sản phẩm
             $prefix = substr($product->sku, 0, 3);
             $batchNumber = $prefix . '-BATCH-' . rand(1000, 9999);
 

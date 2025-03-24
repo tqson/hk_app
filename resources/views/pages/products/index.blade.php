@@ -168,7 +168,7 @@
                         <div class="col-md-3 mb-3">
                             <label for="search">Tìm kiếm:</label>
                             <input type="text" class="form-control" id="search" name="search"
-                                   placeholder="Tên, SKU, mã vạch..." value="{{ request('search') }}">
+                                   placeholder="Tên, Mã sản phẩm, mã vạch..." value="{{ request('search') }}">
                         </div>
                         <div class="col-md-2 mb-3">
                             <label for="category_id">Danh mục:</label>
@@ -223,7 +223,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Tên sản phẩm</th>
-                            <th>SKU</th>
+                            <th>Mã sản phẩm</th>
                             <th>Danh mục</th>
                             <th>Đơn vị</th>
                             <th>Giá bán</th>

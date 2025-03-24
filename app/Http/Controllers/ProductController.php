@@ -15,7 +15,7 @@ class ProductController extends Controller
     {
         $query = Product::with(['category', 'batches']);
 
-        // Tìm kiếm theo tên sản phẩm, mã SKU hoặc mã vạch
+        // Tìm kiếm theo tên sản phẩm, mã Sản phẩm hoặc mã vạch
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
             $query->where(function($q) use ($search) {

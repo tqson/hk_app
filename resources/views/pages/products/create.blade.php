@@ -25,7 +25,7 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="sku">Mã SKU <span class="text-danger">*</span></label>
+                                    <label for="sku">Mã Sản phẩm <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('sku') is-invalid @enderror" id="sku" name="sku" value="{{ old('sku') }}" required>
                                     @error('sku')
                                     <div class="invalid-feedback">{{ $message }}</div>

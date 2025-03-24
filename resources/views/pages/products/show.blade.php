@@ -67,7 +67,7 @@
                                         <td>{{ $product->name }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Mã SKU:</th>
+                                        <th>Mã sản phẩm:</th>
                                         <td>{{ $product->sku }}</td>
                                     </tr>
                                     <tr>
