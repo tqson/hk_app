@@ -218,7 +218,159 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Mã sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Đơn vị</th>
+                            <th>Giá bán</th>
+                            <th>Tồn kho</th>
+                            <th>Lô hàng</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @forelse($products as $product)
+                            <tr>
+                                <td>{{ $product->id }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        @if($product->image)
+                                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-thumbnail me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                        @else
+                                            <div class="bg-light me-2 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                <i class="fas fa-pills text-secondary"></i>
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <div class="font-weight-bold">{{ $product->name }}</div>
+                                            @if($product->barcode)
+                                                <small class="text-muted">{{ $product->barcode }}</small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ $product->sku }}</td>
+                                <td>{{ $product->category->name ?? 'N/A' }}</td>
+                                <td>{{ $product->unit }}</td>
+                                <td>{{ number_format($product->price, 0, ',', '.') }} đ</td>
+                                <td>
+                                    <span class="font-weight-bold {{ $product->getTotalStockAttribute() > 0 ? 'text-success' : 'text-danger' }}">
+                                        {{ $product->getTotalStockAttribute() }}
+                                    </span>
+                                </td>
+                                <td>
+                                    @if($product->batches->count() > 0)
+                                        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#batchModal{{ $product->id }}">
+                                            {{ $product->batches->count() }} lô
+                                        </button>
 
+                                        <!-- Modal hiển thị thông tin lô -->
+                                        <div class="modal fade" id="batchModal{{ $product->id }}" tabindex="-1" role="dialog" aria-labelledby="batchModalLabel{{ $product->id }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="batchModalLabel{{ $product->id }}">Thông tin lô hàng - {{ $product->name }}</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Số lô</th>
+                                                                    <th>Ngày sản xuất</th>
+                                                                    <th>Hạn sử dụng</th>
+                                                                    <th>Số lượng</th>
+                                                                    <th>Trạng thái</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                @foreach($product->batches as $batch)
+                                                                    <tr>
+                                                                        <td>{{ $batch->batch_number }}</td>
+                                                                        <td>{{ $batch->manufacturing_date->format('d/m/Y') }}</td>
+                                                                        <td>
+                                                                            {{ $batch->expiry_date->format('d/m/Y') }}
+                                                                        </td>
+                                                                        <td>{{ $batch->quantity }}</td>
+                                                                        <td>
+                                                                            @if($batch->status == 'active')
+                                                                                <span class="badge badge-success">Đang sử dụng</span>
+                                                                            @elseif($batch->status == 'inactive')
+                                                                                <span class="badge badge-success">Ngừng sử dụng</span>
+                                                                            @else
+                                                                                <span class="badge badge-danger">Hết hạn</span>
+                                                                            @endif
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <span class="text-muted">Không có lô</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($product->status)
+                                        <div class="d-flex align-items-center">
+                                            <span class="status-dot bg-success mr-2"></span>
+                                            <span>Hoạt động</span>
+                                        </div>
+                                    @else
+                                        <div class="d-flex align-items-center">
+                                            <span class="status-dot bg-danger mr-2"></span>
+                                            <span>Dừng hoạt động</span>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="action-dropdown">
+                                        <button type="button" class="action-dropdown-toggle w-100" onclick="toggleActionMenu({{ $product->id }})">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <div id="actionDropdown{{ $product->id }}" class="action-dropdown-menu">
+                                            <a href="{{ route('products.show', $product->id) }}" class="action-dropdown-item">
+                                                <i class="fas fa-eye"></i> Xem chi tiết
+                                            </a>
+                                            @if($product->status)
+                                                <a href="{{ route('products.edit', $product->id) }}" class="action-dropdown-item">
+                                                    <i class="fas fa-edit"></i> Chỉnh sửa
+                                                </a>
+                                                <a href="javascript:void(0)" class="action-dropdown-item text-danger" onclick="confirmDeactivate('{{ $product->id }}', '{{ $product->name }}')">
+                                                    <i class="fas fa-ban"></i> Dừng hoạt động
+                                                </a>
+                                            @endif
+                                            <div class="action-dropdown-divider"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="10" class="text-center py-5">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <i class="fas fa-box-open fa-3x text-gray-300 mb-3"></i>
+                                        <h5 class="text-gray-700">Không tìm thấy sản phẩm nào</h5>
+                                        <p class="text-gray-500">Hãy thêm sản phẩm mới hoặc thay đổi bộ lọc tìm kiếm</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                        </tbody>
                     </table>
 
                     <!-- Ant Design style pagination -->
