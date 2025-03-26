@@ -49,8 +49,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('product-categories.index') }}" class="sidebar-submenu-link {{ request()->routeIs('product-categories.*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Danh mục loại sản phẩm">
-                        <span>Danh mục loại sản phẩm</span>
+                    <a href="{{ route('product-categories.index') }}" class="sidebar-submenu-link {{ request()->routeIs('product-categories.*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Nhóm sản phẩm">
+                        <span>Nhóm sản phẩm</span>
                     </a>
                 </li>
             </ul>
@@ -93,8 +93,8 @@
             </a>
             <ul class="sidebar-submenu" style="{{ $isInventoryActive && !session('sidebar_collapsed', false) ? 'display: block;' : 'display: none;' }}">
                 <li>
-                    <a href="{{ route('inventory.index') }}" class="sidebar-submenu-link {{ request()->routeIs('inventory.index') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Kiểm tra tồn kho">
-                        <span>Kiểm tra tồn kho</span>
+                    <a href="{{ route('inventory.index') }}" class="sidebar-submenu-link {{ request()->routeIs('inventory.index') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Kiểm kê kho">
+                        <span>Kiểm kê kho</span>
                     </a>
                 </li>
                 <li>

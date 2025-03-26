@@ -165,6 +165,8 @@
                                                         data-debt-amount="{{ $import->debt_amount }}">
                                                     <i class="fas fa-money-bill"></i> Thanh toán
                                                 </button>
+
+                                                <input type="hidden" id="debt_amount" value="{{ $import->debt_amount }}">
                                             @endif
                                         </td>
                                     </tr>
@@ -190,6 +192,7 @@
     <!-- Modal Cập nhật thanh toán -->
     <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel"
          aria-hidden="true">
+        <input type="hidden" id="debt_amount_data">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -246,12 +249,16 @@
                 var totalAmount = button.data('total-amount');
                 var paidAmount = button.data('paid-amount');
                 var debtAmount = button.data('debt-amount');
+                console.log('debtAmount', debtAmount);
 
                 var modal = $(this);
                 modal.find('#import_code').val(importCode);
                 modal.find('#total_amount').val(totalAmount.toLocaleString('vi-VN') + ' VNĐ');
                 modal.find('#paid_amount').val(paidAmount.toLocaleString('vi-VN') + ' VNĐ');
                 modal.find('#debt_amount').val(debtAmount.toLocaleString('vi-VN') + ' VNĐ');
+
+                // Lưu giá trị debt_amount vào một data attribute của input để dễ truy cập
+                modal.find('#debt_amount_data').data('value', debtAmount);
 
                 // Set form action
                 $('#paymentForm').attr('action', '/imports/' + importId + '/update-payment');
@@ -262,7 +269,11 @@
 
             $('#payment_amount').on('input', function () {
                 var payment = parseFloat($(this).val()) || 0;
-                var debtAmount = parseFloat($('#paymentModal').find('button').data('debt-amount')) || 0;
+                // Lấy giá trị debt_amount từ data attribute của input
+                var debtAmount = parseFloat($('#debt_amount_data').data('value')) || 0;
+
+                console.log('payment', payment);
+                console.log('debtAmount', debtAmount);
 
                 if (payment > debtAmount) {
                     $('#payment_error').text('Số tiền thanh toán không được vượt quá công nợ hiện tại');
@@ -274,6 +285,19 @@
                     $('#payment_error').text('');
                     $('#confirmPaymentBtn').prop('disabled', false);
                 }
+            });
+
+            // Thêm định dạng tiền tệ cho payment_amount
+            $('#payment_amount').on('blur', function() {
+                var value = parseFloat($(this).val()) || 0;
+                if (value > 0) {
+                    $(this).val(value.toLocaleString('vi-VN'));
+                }
+            });
+
+            $('#payment_amount').on('focus', function() {
+                var value = $(this).val().replace(/[^\d]/g, '') || '';
+                $(this).val(value);
             });
 
             $('#viewHistoryBtn').click(function () {

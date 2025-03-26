@@ -290,7 +290,7 @@
                 const payment = parseFloat($(this).val()) || 0;
                 const debtAmount = {{ $import->debt_amount }};
 
-                console.log(payment);
+                console.log('show', payment);
                 console.log(debtAmount);
                 if (payment > debtAmount) {
                     $('#payment_error').text('Số tiền thanh toán không được vượt quá công nợ hiện tại');

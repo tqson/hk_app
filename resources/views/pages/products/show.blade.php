@@ -53,7 +53,7 @@
 {{--                </div>--}}
 {{--            </div>--}}
 
-            <div class="col-xl-8 col-md-7">
+            <div class="col-10 col-md-9">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Thông tin sản phẩm</h6>
@@ -66,10 +66,10 @@
                                         <th style="width: 40%">Tên sản phẩm:</th>
                                         <td>{{ $product->name }}</td>
                                     </tr>
-                                    <tr>
-                                        <th>Mã sản phẩm:</th>
-                                        <td>{{ $product->sku }}</td>
-                                    </tr>
+{{--                                    <tr>--}}
+{{--                                        <th>Mã sản phẩm:</th>--}}
+{{--                                        <td>{{ $product->sku }}</td>--}}
+{{--                                    </tr>--}}
                                     <tr>
                                         <th>Mã vạch:</th>
                                         <td>{{ $product->barcode ?? 'Chưa có' }}</td>

@@ -16,13 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('category_id')->constrained('product_categories')->onDelete('cascade');
             $table->string('unit')->comment('Đơn vị tính');
-            $table->string('sku')->nullable()->unique()->comment('Mã sản phẩm');
-            $table->string('barcode')->nullable()->unique()->comment('Mã vạch');
-            $table->decimal('price', 12, 2)->default(0)->comment('Giá bán');
-            $table->decimal('import_price', 12, 2)->default(0)->comment('Giá nhập');
-            $table->integer('stock')->default(0)->comment('Số lượng tồn kho không theo lô');
+            $table->bigInteger('price')->comment('Giá bán');
+//            $table->decimal('import_price', 12, 2)->default(0)->comment('Giá nhập');
             $table->text('description')->nullable()->comment('Mô tả sản phẩm');
-            $table->string('image')->nullable()->comment('Hình ảnh sản phẩm');
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

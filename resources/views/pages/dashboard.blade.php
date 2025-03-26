@@ -552,5 +552,4 @@
             }
         });
     </script>
-
 @endsection

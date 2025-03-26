@@ -51,10 +51,11 @@ class DisposalInvoiceController extends Controller
      */
     public function create()
     {
-        // Lấy danh sách sản phẩm còn tồn kho
+        // Lấy danh sách sản phẩm còn tồn kho (chỉ dựa vào số lượng trong các lô)
         $products = Product::whereHas('batches', function($query) {
             $query->where('quantity', '>', 0);
-        })->orWhere('stock', '>', 0)->get();
+        })->get();
+
         $lastDisposal = DisposalInvoice::latest()->first();
         $lastId = $lastDisposal ? intval(substr($lastDisposal->disposal_code, 3)) : 0;
         $disposalCode = 'HUY' . str_pad($lastId + 1, 6, '0', STR_PAD_LEFT);
@@ -70,7 +71,7 @@ class DisposalInvoiceController extends Controller
         $request->validate([
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
-            'items.*.batch_id' => 'nullable|exists:product_batches,id',
+            'items.*.batch_id' => 'required|exists:product_batches,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
             'items.*.reason' => 'required|string|max:255',
@@ -83,8 +84,10 @@ class DisposalInvoiceController extends Controller
             // Tạo phiếu xuất hủy
             $invoice = DisposalInvoice::create([
                 'user_id' => auth()->id(),
+                'disposal_code' => $request->disposal_code,
                 'total_amount' => 0, // Sẽ cập nhật sau
                 'note' => $request->note,
+                'disposal_date' => now(),
             ]);
 
             $totalAmount = 0;
@@ -100,28 +103,22 @@ class DisposalInvoiceController extends Controller
                 DisposalItem::create([
                     'disposal_invoice_id' => $invoice->id,
                     'product_id' => $item['product_id'],
-                    'product_batch_id' => $item['batch_id'] ?? null,
+                    'product_batch_id' => $item['batch_id'],
                     'quantity' => $quantity,
                     'price' => $price,
                     'total_price' => $totalPrice,
                     'reason' => $item['reason'],
                 ]);
 
-                // Cập nhật số lượng tồn kho
-                if (!empty($item['batch_id'])) {
-                    // Nếu có lô, cập nhật số lượng trong lô
-                    $batch = ProductBatch::find($item['batch_id']);
-                    if ($batch) {
-                        $batch->quantity = max(0, $batch->quantity - $quantity);
-                        $batch->save();
+                // Cập nhật số lượng trong lô
+                $batch = ProductBatch::find($item['batch_id']);
+                if ($batch) {
+                    if ($batch->quantity < $quantity) {
+                        throw new \Exception("Số lượng hủy vượt quá số lượng tồn kho của lô {$batch->batch_number}");
                     }
-                } else {
-                    // Nếu không có lô, cập nhật số lượng trong sản phẩm
-                    $product = Product::find($item['product_id']);
-                    if ($product) {
-                        $product->stock = max(0, $product->stock - $quantity);
-                        $product->save();
-                    }
+
+                    $batch->quantity = $batch->quantity - $quantity;
+                    $batch->save();
                 }
             }
 

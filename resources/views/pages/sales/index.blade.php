@@ -50,23 +50,21 @@
     <div class="container-fluid">
         <h1 class="mb-4">Bán hàng</h1>
 
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group position-relative">
-                            <label for="productSearch">Thêm sản phẩm vào đơn</label>
-                            <input type="text" class="form-control" id="productSearch" placeholder="Gõ tên sản phẩm cần tìm...">
-                            <div class="product-search-results" id="searchResults"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="row">
             <!-- Bảng danh sách sản phẩm -->
             <div class="col-md-8">
+
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group position-relative">
+                                <label for="productSearch">Thêm sản phẩm vào đơn</label>
+                                <input type="text" class="form-control" id="productSearch" placeholder="Gõ tên sản phẩm cần tìm...">
+                                <div class="product-search-results" id="searchResults"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header">
                         <h5>Danh sách sản phẩm</h5>
@@ -204,7 +202,7 @@
                 const query = $(this).val();
                 if (query.length >= 2) {
                     $.ajax({
-                        url: "{{ route('sales.search-products') }}",
+                        url: "{{ route('api.products.search') }}",
                         method: 'GET',
                         data: { query: query },
                         success: function(data) {
@@ -212,7 +210,7 @@
                             if (data.length > 0) {
                                 data.forEach(product => {
                                     html += `<div class="product-search-item" data-id="${product.id}">
-                                    ${product.name} - ${product.stock} ${product.unit} (Lô: ${product.batch_number})
+                                    ${product.name} - ${product.total_quantity} ${product.unit}
                                 </div>`;
                                 });
                             } else {
@@ -239,7 +237,7 @@
 
                         if (existingProduct) {
                             // Nếu đã có, tăng số lượng
-                            if (existingProduct.quantity < product.stock) {
+                            if (existingProduct.quantity < product.total_quantity) {
                                 existingProduct.quantity += 1;
                                 updateCartTable();
                             } else {
@@ -251,8 +249,8 @@
                                 id: product.id,
                                 name: product.name,
                                 unit: product.unit,
-                                stock: product.stock,
-                                batch_number: product.batch_number,
+                                total_quantity: product.total_quantity,
+                                // batch_number: product.batch_number,
                                 price: product.price || 0,  // Sử dụng giá cố định từ database
                                 quantity: 1
                             });
@@ -280,12 +278,12 @@
                     <td>${index + 1}</td>
                     <td>${item.name}</td>
                     <td>${item.unit}</td>
-                    <td>${item.stock}</td>
+                    <td>${item.total_quantity}</td>
                     <td>
                         <input type="number" class="form-control form-control-sm quantity-input"
-                            data-index="${index}" value="${item.quantity}" min="1" max="${item.stock}">
+                            data-index="${index}" value="${item.quantity}" min="1" max="${item.total_quantity}">
                     </td>
-                    <td>${item.batch_number}</td>
+<!--                    <td>${item.batch_number}</td>-->
                     <td>
                         <span class="price-display">${item.price}</span>
                     </td>
@@ -325,7 +323,7 @@
                 const index = $(this).data('index');
                 const newQuantity = parseInt($(this).val());
 
-                if (newQuantity > 0 && newQuantity <= cart[index].stock) {
+                if (newQuantity > 0 && newQuantity <= cart[index].total_quantity) {
                     cart[index].quantity = newQuantity;
                     updateCartTable();
                 } else {

@@ -23,18 +23,14 @@ class InventoryController extends Controller
         // Lọc theo trạng thái tồn kho
         if ($request->has('stock_status') && !empty($request->stock_status)) {
             if ($request->stock_status === 'in_stock') {
-                $query->where(function($q) {
-                    $q->where('stock', '>', 0)
-                        ->orWhereHas('batches', function($q) {
-                            $q->where('quantity', '>', 0);
-                        });
+                // Sản phẩm còn hàng (có ít nhất một lô với số lượng > 0)
+                $query->whereHas('batches', function($q) {
+                    $q->where('quantity', '>', 0);
                 });
             } elseif ($request->stock_status === 'out_of_stock') {
-                $query->where(function($q) {
-                    $q->where('stock', '<=', 0)
-                        ->whereDoesntHave('batches', function($q) {
-                            $q->where('quantity', '>', 0);
-                        });
+                // Sản phẩm hết hàng (không có lô nào hoặc tất cả các lô đều có số lượng <= 0)
+                $query->whereDoesntHave('batches', function($q) {
+                    $q->where('quantity', '>', 0);
                 });
             }
         }

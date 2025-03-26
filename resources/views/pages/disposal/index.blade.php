@@ -444,11 +444,6 @@
                             <i class="fas fa-trash-alt"></i>
                         </div>
                         <p class="ant-empty-description">Không có phiếu xuất hủy nào</p>
-                        <div>
-                            <a href="{{ route('disposal.create') }}" class="ant-btn ant-btn-danger">
-                                <i class="fas fa-plus"></i> Tạo phiếu xuất hủy
-                            </a>
-                        </div>
                     </div>
                 @endif
             </div>

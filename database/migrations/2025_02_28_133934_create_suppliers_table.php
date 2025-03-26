@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('tax_code')->nullable()->comment('Mã số thuế');
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
+            $table->string('mobile')->nullable();
             $table->string('email')->nullable();
             $table->string('contact_person')->nullable()->comment('Người liên hệ');
             $table->text('note')->nullable();

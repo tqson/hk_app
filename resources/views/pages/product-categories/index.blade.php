@@ -10,10 +10,10 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Danh sách danh mục sản phẩm</h3>
+                        <h3 class="card-title">Danh sách nhóm sản phẩm</h3>
                         <div class="card-tools">
                             <a href="{{ route('product-categories.create') }}" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Thêm danh mục mới
+                                <i class="fas fa-plus"></i> Thêm nhóm sản phẩm mới
                             </a>
                         </div>
                     </div>

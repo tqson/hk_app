@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('sales_invoices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->decimal('total_amount', 15, 2);
+            $table->bigInteger('total_amount');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
         });

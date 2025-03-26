@@ -19,9 +19,7 @@ class ProductController extends Controller
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('sku', 'like', '%' . $search . '%')
-                    ->orWhere('barcode', 'like', '%' . $search . '%');
+                $q->where('name', 'like', '%' . $search . '%');
             });
         }
 
@@ -99,8 +97,6 @@ class ProductController extends Controller
             'unit' => 'required|max:50',
             'price' => 'required|numeric|min:0',
             'import_price' => 'required|numeric|min:0',
-            'sku' => 'required|unique:products,sku',
-            'barcode' => 'nullable|unique:products,barcode',
             'description' => 'nullable',
             'image' => 'nullable|image|max:2048',
             'status' => 'required',
@@ -131,8 +127,6 @@ class ProductController extends Controller
             'unit' => $request->unit,
             'price' => $request->price,
             'import_price' => $request->import_price,
-            'sku' => $request->sku,
-            'barcode' => $request->barcode,
             'description' => $request->description,
             'image' => $imagePath,
             'status' => $request->status ?? true,
@@ -187,8 +181,6 @@ class ProductController extends Controller
             'category_id' => 'required|exists:product_categories,id',
             'unit' => 'required|max:50',
             'price' => 'required|numeric|min:0',
-            'sku' => 'required|unique:products,sku,'.$id,
-            'barcode' => 'nullable|unique:products,barcode,'.$id,
             'description' => 'nullable',
             'image' => 'nullable|image|max:2048',
             'status' => 'required',
@@ -224,8 +216,6 @@ class ProductController extends Controller
             'category_id' => $request->category_id,
             'unit' => $request->unit,
             'price' => $request->price,
-            'sku' => $request->sku,
-            'barcode' => $request->barcode,
             'description' => $request->description,
             'status' => $request->status,
         ]);
@@ -292,13 +282,15 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->get('term');
+        $query = $request->get('search');
         $products = Product::where('name', 'like', "%{$query}%")
-            ->orWhere('sku', 'like', "%{$query}%")
-            ->orWhere('barcode', 'like', "%{$query}%")
             ->with(['category', 'batches'])
             ->where('status', true)
             ->get();
+
+        $products->each(function ($product) {
+            $product->total_quantity = $product->batches->sum('quantity');
+        });
 
         return response()->json($products);
     }

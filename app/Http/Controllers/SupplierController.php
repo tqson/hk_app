@@ -107,7 +107,7 @@ class SupplierController extends Controller
             'contact_person' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
             'mobile' => 'required|string|size:10|regex:/^[0-9]+$/',
-            'phone' => 'nullable|string|size:11|regex:/^[0-9]+$/',
+            'phone' => 'nullable|string|size:10|regex:/^[0-9]+$/',
             'tax_code' => 'nullable|string|size:10|regex:/^[0-9]+$/',
         ], [
             'name.required' => 'Tên nhà cung cấp không được để trống',

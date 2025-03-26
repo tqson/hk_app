@@ -21,6 +21,7 @@ class ProductCategoryController extends Controller
 
     public function store(Request $request)
     {
+        dd('store product category');
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:product_categories,name|max:255',
         ]);
