@@ -25,23 +25,9 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="sku">Mã sản phẩm <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('sku') is-invalid @enderror" id="sku" name="sku" value="{{ old('sku', $product->sku) }}" required>
-                                    @error('sku')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="barcode">Mã vạch</label>
-                                    <input type="text" class="form-control @error('barcode') is-invalid @enderror" id="barcode" name="barcode" value="{{ old('barcode', $product->barcode) }}">
-                                    @error('barcode')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="category_id">Danh mục <span class="text-danger">*</span></label>
                                     <select class="form-control @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>

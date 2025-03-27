@@ -24,23 +24,9 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="sku">Mã Sản phẩm <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('sku') is-invalid @enderror" id="sku" name="sku" value="{{ old('sku') }}" required>
-                                    @error('sku')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="barcode">Mã vạch</label>
-                                    <input type="text" class="form-control @error('barcode') is-invalid @enderror" id="barcode" name="barcode" value="{{ old('barcode') }}">
-                                    @error('barcode')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="category_id">Danh mục <span class="text-danger">*</span></label>
                                     <select class="form-control @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>
@@ -88,73 +74,6 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <div class="form-group mb-3">
-                                <label for="status">Trạng thái</label>
-                                <select class="form-control @error('status') is-invalid @enderror" id="status" name="status">
-                                    <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Hoạt động</option>
-                                    <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Dừng hoạt động</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
-                    <h6 class="font-weight-bold">Thông tin lô hàng đầu tiên</h6>
-                    <div class="row">
-                        <div class="col-md-2 mb-3">
-                            <label for="batch_number">Số lô <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('batch_number') is-invalid @enderror" id="batch_number" name="batch_number" value="{{ old('batch_number') }}" required>
-                            @error('batch_number')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-2 mb-3">
-                            <label for="manufacturing_date">Ngày sản xuất <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control @error('manufacturing_date') is-invalid @enderror" id="manufacturing_date" name="manufacturing_date" value="{{ old('manufacturing_date') }}" required>
-                            @error('manufacturing_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-2 mb-3">
-                            <label for="expiry_date">Hạn sử dụng <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control @error('expiry_date') is-invalid @enderror" id="expiry_date" name="expiry_date" value="{{ old('expiry_date') }}" required>
-                            @error('expiry_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-2 mb-3">
-                            <label for="quantity">Số lượng <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity" name="quantity" value="{{ old('quantity', 0) }}" min="0" required>
-                            @error('quantity')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-2 mb-3">
-                            <label for="import_price">Giá nhập <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <input type="number" class="form-control @error('import_price') is-invalid @enderror" id="import_price" name="import_price" value="{{ old('import_price', 0) }}" min="0" required>
-                                <div class="input-group-append">
-                                    <span class="input-group-text">đ</span>
-                                </div>
-                            </div>
-                            @error('import_price')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-2 mb-3">
-                            <label for="batch_status">Trạng thái lô</label>
-                            <select class="form-control @error('batch_status') is-invalid @enderror" id="batch_status" name="batch_status">
-                                <option value="active" {{ old('batch_status', 'active') == 'active' ? 'selected' : '' }}>Đang sử dụng</option>
-                                <option value="inactive" {{ old('batch_status') == 'inactive' ? 'selected' : '' }}>Ngừng sử dụng</option>
-                            </select>
-                            @error('batch_status')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
                     </div>
 
                     <div class="form-group mt-4">

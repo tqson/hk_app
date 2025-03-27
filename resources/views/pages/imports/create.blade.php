@@ -220,7 +220,7 @@
                 $.ajax({
                     url: "{{ route('api.products.search') }}",
                     method: 'GET',
-                    data: {term: searchTerm},
+                    data: {search: searchTerm},
                     success: function (response) {
                         renderSearchResults(response);
                     },

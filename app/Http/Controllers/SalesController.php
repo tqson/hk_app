@@ -76,8 +76,12 @@ class SalesController extends Controller
 
                 // Cập nhật tồn kho
                 $productModel = Product::find($product['id']);
-                $productModel->stock -= $product['quantity'];
-                $productModel->save();
+                $productBatch = $productModel->batches()->where('product_id', $product['id'])->first();
+//                dd($productBatch);
+               $productBatch->quantity -= $product['quantity'];
+//                $productModel->stock -= $product['quantity'];
+//                $productModel->save();
+                $productBatch->save();
             }
 
             DB::commit();

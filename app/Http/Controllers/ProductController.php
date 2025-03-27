@@ -94,12 +94,9 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'category_id' => 'required|exists:product_categories,id',
-            'unit' => 'required|max:50',
             'price' => 'required|numeric|min:0',
-            'import_price' => 'required|numeric|min:0',
+//            'import_price' => 'required|numeric|min:0',
             'description' => 'nullable',
-            'image' => 'nullable|image|max:2048',
-            'status' => 'required',
 
             // Thông tin lô hàng ban đầu (nếu có)
             'batch_number' => 'nullable|max:50',
@@ -107,7 +104,7 @@ class ProductController extends Controller
             'expiry_date' => 'nullable|date|after:manufacturing_date',
             'stock' => 'nullable|integer|min:0',
         ]);
-
+//dd($validator);
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
@@ -115,10 +112,6 @@ class ProductController extends Controller
         }
 
         // Xử lý upload hình ảnh
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-        }
 
         // Tạo sản phẩm mới
         $product = Product::create([
@@ -128,7 +121,6 @@ class ProductController extends Controller
             'price' => $request->price,
             'import_price' => $request->import_price,
             'description' => $request->description,
-            'image' => $imagePath,
             'status' => $request->status ?? true,
             'stock' => $request->stock ?? 0,
         ]);
@@ -179,35 +171,22 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'category_id' => 'required|exists:product_categories,id',
-            'unit' => 'required|max:50',
+//            'unit' => 'required|max:50',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable',
-            'image' => 'nullable|image|max:2048',
-            'status' => 'required',
-            'batches.*.batch_number' => 'required|string|max:50',
-            'batches.*.manufacturing_date' => 'required|date',
-            'batches.*.expiry_date' => 'required|date|after:batches.*.manufacturing_date',
-            'batches.*.quantity' => 'required|numeric|min:0',
-            'batches.*.import_price' => 'required|numeric|min:0',
-            'batches.*.status' => 'required',
+//            'status' => 'required',
+//            'batches.*.batch_number' => 'required|string|max:50',
+//            'batches.*.manufacturing_date' => 'required|date',
+//            'batches.*.expiry_date' => 'required|date|after:batches.*.manufacturing_date',
+//            'batches.*.quantity' => 'required|numeric|min:0',
+//            'batches.*.import_price' => 'required|numeric|min:0',
+//            'batches.*.status' => 'required',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
-        }
-
-        // Handle image upload if a new image is provided
-        if ($request->hasFile('image')) {
-            // Delete old image if it exists
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
-            }
-
-            // Store the new image
-            $imagePath = $request->file('image')->store('products', 'public');
-            $product->image = $imagePath;
         }
 
         // Update product details
