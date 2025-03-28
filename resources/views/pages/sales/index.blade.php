@@ -43,6 +43,21 @@
             max-width: 100%;
             height: auto;
         }
+
+        .payment-section {
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-content {
+            flex-grow: 1;
+        }
+
+        .payment-buttons {
+            margin-top: auto;
+        }
+
     </style>
 @endsection
 
@@ -54,7 +69,7 @@
             <!-- Bảng danh sách sản phẩm -->
             <div class="col-md-8">
 
-                <div class="col-md-8">
+                <div class="col">
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group position-relative">
@@ -100,57 +115,59 @@
                     <div class="card-header">
                         <h5>Thanh toán</h5>
                     </div>
-                    <div class="card-body payment-section">
-                        <div class="form-group row">
-                            <label class="col-sm-5 col-form-label">Tổng tiền:</label>
-                            <div class="col-sm-7">
-                                <input type="text" class="form-control-plaintext text-right font-weight-bold" id="totalAmount" readonly value="0 VNĐ">
+                    <div class="card-body payment-section d-flex flex-column">
+                        <div class="payment-content flex-grow-1">
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Tổng tiền:</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control-plaintext text-right font-weight-bold" id="totalAmount" readonly value="0 VNĐ">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Chiết khấu:</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control" id="discount" value="0" min="0">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Khách phải trả:</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control-plaintext text-right font-weight-bold" id="finalAmount" readonly value="0 VNĐ">
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Tiền mặt:</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control" id="cashAmount" value="0" min="0">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Chuyển khoản:</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control" id="transferAmount" value="0" min="0">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Tiền thừa:</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control-plaintext text-right" id="changeAmount" readonly value="0 VNĐ">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="notes">Ghi chú:</label>
+                                <textarea class="form-control" id="notes" rows="3"></textarea>
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label class="col-sm-5 col-form-label">Chiết khấu:</label>
-                            <div class="col-sm-7">
-                                <input type="number" class="form-control" id="discount" value="0" min="0">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-5 col-form-label">Khách phải trả:</label>
-                            <div class="col-sm-7">
-                                <input type="text" class="form-control-plaintext text-right font-weight-bold" id="finalAmount" readonly value="0 VNĐ">
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="form-group row">
-                            <label class="col-sm-5 col-form-label">Tiền mặt:</label>
-                            <div class="col-sm-7">
-                                <input type="number" class="form-control" id="cashAmount" value="0" min="0">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-5 col-form-label">Chuyển khoản:</label>
-                            <div class="col-sm-7">
-                                <input type="number" class="form-control" id="transferAmount" value="0" min="0">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-5 col-form-label">Tiền thừa:</label>
-                            <div class="col-sm-7">
-                                <input type="text" class="form-control-plaintext text-right" id="changeAmount" readonly value="0 VNĐ">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="notes">Ghi chú:</label>
-                            <textarea class="form-control" id="notes" rows="3"></textarea>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-4">
+                        <div class="payment-buttons mt-auto d-flex justify-content-between">
                             <button type="button" class="btn btn-info" id="qrCodeBtn">
                                 <i class="fas fa-qrcode"></i> QR Code
                             </button>
@@ -204,7 +221,7 @@
                     $.ajax({
                         url: "{{ route('api.products.search') }}",
                         method: 'GET',
-                        data: { query: query },
+                        data: { search: query },
                         success: function(data) {
                             let html = '';
                             if (data.length > 0) {

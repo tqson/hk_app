@@ -104,7 +104,7 @@ class ProductController extends Controller
             'expiry_date' => 'nullable|date|after:manufacturing_date',
             'stock' => 'nullable|integer|min:0',
         ]);
-//dd($validator);
+
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)

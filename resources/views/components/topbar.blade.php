@@ -1,20 +1,19 @@
 <div class="topbar">
     <div class="topbar-brand">
         <a href="{{ route('dashboard') }}" class="topbar-logo">
-            <i class="fas fa-store"></i> HK LOVE
+            <img src="{{ asset('images/logo-hk-cropped.png') }}" alt="HK LOVE Logo" class="brand-logo">
+            <span class="brand-text">HK LOVE</span>
         </a>
     </div>
-
     <div class="topbar-user">
         <div class="topbar-user-info">
-            <div class="topbar-user-name">{{ Auth::user()->name ?? 'Admin User' }}</div>
-            <div class="topbar-user-role">{{ Auth::user()->role ?? 'Administrator' }}</div>
+            <div class="topbar-user-name">{{ Auth::user()->full_name ?? 'Admin User' }}</div>
+{{--            <div class="topbar-user-role">{{ Auth::user()->role ?? 'Administrator' }}</div>--}}
         </div>
         <div class="dropdown">
             <a href="#" class="topbar-user-avatar dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <img src="{{ Auth::user()->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'Admin User') . '&background=random' }}" alt="User Avatar">
             </a>
-
             <!-- Dropdown menu -->
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li>

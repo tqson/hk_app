@@ -2,11 +2,12 @@
 
 @section('content')
     <div class="container-fluid">
+        <h1 class="h3 mb-2 text-gray-800">Quản lý hóa đơn</h1>
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">Hóa đơn</h5>
+                        <h3 class="mb-0"></h3>
                     </div>
 
                     <div class="card-body">

@@ -102,11 +102,6 @@
                         <span>Danh sách phiếu xuất hủy</span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('disposal.create') }}" class="sidebar-submenu-link {{ request()->routeIs('disposal.create') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Tạo phiếu xuất hủy">
-                        <span>Tạo phiếu xuất hủy</span>
-                    </a>
-                </li>
             </ul>
         </li>
     </ul>

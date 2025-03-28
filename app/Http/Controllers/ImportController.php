@@ -52,7 +52,6 @@ class ImportController extends Controller
             'products.*.total_price' => 'required|numeric|min:0',
         ]);
 
-//        dd($request->all());
         DB::beginTransaction();
         try {
             $import = Import::create([
@@ -75,6 +74,7 @@ class ImportController extends Controller
                     'total_price' => $item['total_price'],
                 ]);
 
+//                dump($item);
                 // Handle product batch
                 if (isset($item['product_batch_id']) && $item['product_batch_id']) {
                     // Update existing batch
@@ -85,6 +85,7 @@ class ImportController extends Controller
                     // Update the import item with the batch ID
                     $importItem->product_batch_id = $batch->id;
                     $importItem->save();
+//                    dump($batch);
                 } else {
                     // Create new batch if batch details are provided
                     if (isset($item['batch_number']) && isset($item['expiry_date'])) {
@@ -105,6 +106,7 @@ class ImportController extends Controller
                 }
             }
 
+//            die();
             // Create payment history if paid amount > 0
             if ($request->paid_amount > 0) {
                 PaymentHistory::create([

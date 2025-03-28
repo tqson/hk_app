@@ -16,6 +16,7 @@ class ProductCategory extends Model
      */
     protected $fillable = [
         'name',
+        'note',
         'created_at'
     ];
 

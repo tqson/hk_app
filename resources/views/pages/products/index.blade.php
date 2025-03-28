@@ -3,158 +3,11 @@
 @section('title', 'Quản lý sản phẩm - HK LOVE')
 
 @section('styles')
-    <style>
-        .table th, .table td {
-            vertical-align: middle;
-        }
-
-        /* Ant Design style pagination */
-        .pagination {
-            display: flex;
-            padding-left: 0;
-            list-style: none;
-            border-radius: 0.25rem;
-        }
-
-        .pagination .page-item .page-link {
-            position: relative;
-            display: block;
-            padding: 0.5rem 0.75rem;
-            margin-left: -1px;
-            line-height: 1.25;
-            color: #1890ff;
-            background-color: #fff;
-            border: 1px solid #d9d9d9;
-        }
-
-        .pagination .page-item.active .page-link {
-            z-index: 3;
-            color: #fff;
-            background-color: #1890ff;
-            border-color: #1890ff;
-        }
-
-        .pagination .page-item.disabled .page-link {
-            color: #6c757d;
-            pointer-events: none;
-            cursor: auto;
-            background-color: #fff;
-            border-color: #d9d9d9;
-        }
-
-        .pagination-size-selector {
-            display: flex;
-            align-items: center;
-        }
-
-        .pagination-size-selector select {
-            margin: 0 5px;
-        }
-
-        /* Improve table appearance */
-        .table {
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background-color: #f5f5f5;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        /* Action dropdown styles */
-        .action-dropdown {
-            position: relative;
-        }
-
-        .action-dropdown-toggle {
-            background: none;
-            border: none;
-            color: #1890ff;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 4px;
-        }
-
-        .action-dropdown-toggle:hover {
-            background-color: rgba(24, 144, 255, 0.1);
-        }
-
-        .action-dropdown-menu {
-            position: absolute;
-            right: 0;
-            z-index: 1000;
-            min-width: 180px;
-            padding: 8px 0;
-            margin: 0;
-            background-color: #fff;
-            border-radius: 4px;
-            box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
-            display: none;
-        }
-
-        .action-dropdown-menu.show {
-            display: block;
-        }
-
-        .action-dropdown-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 16px;
-            color: rgba(0, 0, 0, 0.85);
-            font-size: 14px;
-            line-height: 22px;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-            text-decoration: none;
-        }
-
-        .action-dropdown-item:hover {
-            background-color: rgba(24, 144, 255, 0.1);
-        }
-
-        .action-dropdown-item i {
-            margin-right: 8px;
-            font-size: 14px;
-            width: 16px;
-            text-align: center;
-        }
-
-        .action-dropdown-divider {
-            height: 1px;
-            margin: 4px 0;
-            background-color: rgba(0, 0, 0, 0.06);
-        }
-
-        .action-dropdown-item.text-danger {
-            color: #ff4d4f;
-        }
-
-        .action-dropdown-item.text-danger:hover {
-            background-color: rgba(255, 77, 79, 0.1);
-        }
-
-        .status-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-
-        .bg-success {
-            background-color: #52c41a;
-        }
-
-        .bg-danger {
-            background-color: #ff4d4f;
-        }
-    </style>
 @endsection
 
 @section('content')
     <div class="container-fluid">
-        <h1 class="h3 mb-2 text-gray-800">Quản lý sản phẩm</h1>
+            <h1 class="h3 mb-2 text-gray-800">Quản lý sản phẩm</h1>
 
         <!-- Filters and Search -->
         <div class="card shadow mb-4">
@@ -220,7 +73,7 @@
                     <table class="table table-bordered" width="100%" cellspacing="0">
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>STT</th>
                             <th>Tên sản phẩm</th>
                             <th>Mã sản phẩm</th>
                             <th>Danh mục</th>
@@ -233,9 +86,9 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @forelse($products as $product)
+                        @forelse($products as $index => $product)
                             <tr>
-                                <td>{{ $product->id }}</td>
+                                <td>{{ $products->firstItem() + $index  }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         @if($product->image)

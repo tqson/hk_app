@@ -8,9 +8,14 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductCategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = ProductCategory::orderBy('created_at', 'desc')->get();
+        $perPage = $request->input('perPage', 10);
+
+        $categories = ProductCategory::orderBy('created_at', 'desc')
+            ->paginate($perPage)
+            ->appends(['perPage' => $perPage]);
+
         return view('pages.product-categories.index', compact('categories'));
     }
 
@@ -21,9 +26,9 @@ class ProductCategoryController extends Controller
 
     public function store(Request $request)
     {
-        dd('store product category');
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:product_categories,name|max:255',
+            'note' => 'nullable|max:1000',
         ]);
 
         if ($validator->fails()) {
@@ -34,11 +39,18 @@ class ProductCategoryController extends Controller
 
         ProductCategory::create([
             'name' => $request->name,
+            'note' => $request->note,
             'created_at' => now()
         ]);
 
         return redirect()->route('product-categories.index')
-            ->with('success', 'Danh mục sản phẩm đã được tạo thành công.');
+            ->with('success', 'Nhóm sản phẩm đã được tạo thành công.');
+    }
+
+    public function show($id)
+    {
+        $category = ProductCategory::findOrFail($id);
+        return view('pages.product-categories.show', compact('category'));
     }
 
     public function edit($id)
@@ -53,6 +65,7 @@ class ProductCategoryController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255|unique:product_categories,name,' . $id,
+            'note' => 'nullable|max:1000',
         ]);
 
         if ($validator->fails()) {
@@ -62,11 +75,12 @@ class ProductCategoryController extends Controller
         }
 
         $category->update([
-            'name' => $request->name
+            'name' => $request->name,
+            'note' => $request->note
         ]);
 
         return redirect()->route('product-categories.index')
-            ->with('success', 'Danh mục sản phẩm đã được cập nhật thành công.');
+            ->with('success', 'Nhóm sản phẩm đã được cập nhật thành công.');
     }
 
     public function destroy($id)
@@ -82,6 +96,6 @@ class ProductCategoryController extends Controller
         $category->delete();
 
         return redirect()->route('product-categories.index')
-            ->with('success', 'Danh mục sản phẩm đã được xóa thành công.');
+            ->with('success', 'Nhóm sản phẩm đã được xóa thành công.');
     }
 }

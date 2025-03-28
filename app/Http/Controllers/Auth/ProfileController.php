@@ -21,18 +21,19 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        // Since we don't have Order model, we'll use placeholder values
-        // In a real application, you would fetch these from your database
-        $totalOrders = 0; // Placeholder
-        $totalSales = 0; // Placeholder
-
         // Calculate days active
         $createdAt = new Carbon($user->created_at);
         $daysActive = $createdAt->diffInDays(Carbon::now()) + 1; // +1 to include today
 
-        return view('pages.profile', compact('totalOrders', 'totalSales', 'daysActive'));
+        return view('pages.profile', compact('daysActive'));
     }
 
+    /**
+     * Update the user's profile information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     /**
      * Update the user's profile information.
      *
@@ -49,6 +50,8 @@ class ProfileController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string', 'max:255'],
             'bio' => ['nullable', 'string', 'max:1000'],
+            'bank_name' => ['nullable', 'string', 'max:255'],
+            'bank_account_number' => ['nullable', 'string', 'max:50'],
         ]);
 
         $user->update($validated);
@@ -83,6 +86,35 @@ class ProfileController extends Controller
         $user->save();
 
         return redirect()->route('profile.show')->with('success', 'Ảnh đại diện đã được cập nhật thành công.');
+    }
+
+    /**
+     * Update the user's QR code.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function updateQRCode(Request $request)
+    {
+        $request->validate([
+            'qr_code_image' => ['required', 'image', 'max:2048'], // 2MB max
+        ]);
+
+        $user = Auth::user();
+
+        // Delete old QR code if exists
+        if ($user->qr_code_image) {
+            Storage::disk('public')->delete($user->qr_code_image);
+        }
+
+        // Store new QR code
+        $path = $request->file('qr_code_image')->store('qr_codes', 'public');
+
+        // Update user QR code
+        $user->qr_code_image = $path;
+        $user->save();
+
+        return redirect()->route('profile.show')->with('success', 'Mã QR đã được cập nhật thành công.');
     }
 
     /**

@@ -10,6 +10,7 @@
         --sidebar-width: 307px;
         --sidebar-collapsed-width: 80px;
         --topbar-height: 68px;
+        --footer-height: 55px;
         --border-radius: 8px;
         --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         --transition-speed: 0.3s;
@@ -169,6 +170,30 @@
         margin-top: 0.5rem;
         z-index: 1002; /* Ensure it's above other elements */
     }
+
+    .topbar-logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .brand-logo {
+        height: 40px;
+        width: auto;
+        margin-right: 10px;
+    }
+
+    .brand-text {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .topbar-brand {
+        display: flex;
+        align-items: center;
+    }
+
 
     /* Add this to ensure dropdown is visible */
     .dropdown-menu.show {
@@ -370,10 +395,10 @@
     /* Main Content Styles */
     .main-content {
         margin-left: var(--sidebar-width);
-        margin-top: var(--topbar-height);
+        margin-top: calc(var(--topbar-height));
         padding: 20px;
         transition: margin-left var(--transition-speed);
-        min-height: calc(100vh - var(--topbar-height));
+        min-height: calc(100vh - (var(--footer-height) + var(--topbar-height)));
     }
 
     .main-content-collapsed {
@@ -526,6 +551,7 @@
 
     /* Footer */
     .footer {
+        height: var(--footer-height);
         margin-left: var(--sidebar-width);
         padding: 16px 20px;
         transition: margin-left var(--transition-speed);
@@ -565,6 +591,152 @@
         justify-content: center;
     }
 
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    /* Ant Design style pagination */
+    .pagination {
+        display: flex;
+        padding-left: 0;
+        list-style: none;
+        border-radius: 0.25rem;
+    }
+
+    .pagination .page-item .page-link {
+        position: relative;
+        display: block;
+        padding: 0.5rem 0.75rem;
+        margin-left: -1px;
+        line-height: 1.25;
+        color: #1890ff;
+        background-color: #fff;
+        border: 1px solid #d9d9d9;
+    }
+
+    .pagination .page-item.active .page-link {
+        z-index: 3;
+        color: #fff;
+        background-color: #1890ff;
+        border-color: #1890ff;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        cursor: auto;
+        background-color: #fff;
+        border-color: #d9d9d9;
+    }
+
+    .pagination-size-selector {
+        display: flex;
+        align-items: center;
+    }
+
+    .pagination-size-selector select {
+        margin: 0 5px;
+    }
+
+    /* Improve table appearance */
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table thead th {
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    /* Action dropdown styles */
+    .action-dropdown {
+        position: relative;
+    }
+
+    .action-dropdown-toggle {
+        background: none;
+        border: none;
+        color: #1890ff;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 4px;
+    }
+
+    .action-dropdown-toggle:hover {
+        background-color: rgba(24, 144, 255, 0.1);
+    }
+
+    .action-dropdown-menu {
+        position: absolute;
+        right: 0;
+        z-index: 1000;
+        min-width: 180px;
+        padding: 8px 0;
+        margin: 0;
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+        display: none;
+    }
+
+    .action-dropdown-menu.show {
+        display: block;
+    }
+
+    .action-dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        color: rgba(0, 0, 0, 0.85);
+        font-size: 14px;
+        line-height: 22px;
+        cursor: pointer;
+        transition: all 0.3s;
+        white-space: nowrap;
+        text-decoration: none;
+    }
+
+    .action-dropdown-item:hover {
+        background-color: rgba(24, 144, 255, 0.1);
+    }
+
+    .action-dropdown-item i {
+        margin-right: 8px;
+        font-size: 14px;
+        width: 16px;
+        text-align: center;
+    }
+
+    .action-dropdown-divider {
+        height: 1px;
+        margin: 4px 0;
+        background-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .action-dropdown-item.text-danger {
+        color: #ff4d4f;
+    }
+
+    .action-dropdown-item.text-danger:hover {
+        background-color: rgba(255, 77, 79, 0.1);
+    }
+
+    .status-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+
+    .bg-success {
+        background-color: #52c41a;
+    }
+
+    .bg-danger {
+        background-color: #ff4d4f;
+    }
+
     /* Custom Styles */
     i.fas {
         margin-right: 5px;
@@ -598,6 +770,27 @@
     .badge-info {
         background-color: #17a2b8; /* Màu xanh dương */
         color: white;
+    }
+
+    /* Style for readonly inputs */
+    input[readonly],
+    textarea[readonly],
+    select[readonly] {
+        background-color: #f2f2f2 !important;
+        cursor: not-allowed !important;
+        opacity: 0.8;
+        border-color: #ddd;
+        color: #000;
+    }
+
+    /* Optional: Style for disabled inputs as well for consistency */
+    input:disabled,
+    textarea:disabled,
+    select:disabled {
+        background-color: #f2f2f2 !important;
+        cursor: not-allowed !important;
+        opacity: 0.7;
+        border-color: #ddd;
     }
 
 </style>
