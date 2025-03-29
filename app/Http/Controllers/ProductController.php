@@ -265,6 +265,9 @@ class ProductController extends Controller
         $products = Product::where('name', 'like', "%{$query}%")
             ->with(['category', 'batches'])
             ->where('status', true)
+            ->whereHas('batches', function($q) {
+                $q->whereRaw('quantity > 0');
+            })
             ->limit(10)
             ->get();
 
