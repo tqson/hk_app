@@ -121,7 +121,8 @@ class ReturnController extends Controller
 //                    $productModel->stock += $product['return_quantity'];
 //                    $productModel->save();
 
-                    $productBatch = ProductBatch::find($product['batch_id']);
+                    $productBatch = ProductBatch::find($product['batch']);
+
                     if ($productBatch) {
                         $productBatch->quantity += $product['return_quantity'];
                         $productBatch->save();

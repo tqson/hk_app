@@ -259,7 +259,7 @@ class ProductController extends Controller
             ->with('success', 'Sản phẩm đã được xóa thành công.');
     }
 
-    public function search1(Request $request)
+    public function searchSale(Request $request)
     {
         $query = $request->get('search');
         $products = Product::where('name', 'like', "%{$query}%")

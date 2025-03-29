@@ -72,14 +72,16 @@ class SalesController extends Controller
                 $detail->product_id = $product['id'];
                 $detail->quantity = $product['quantity'];
                 $detail->price = $product['price'];
-                $detail->save();
 
                 // Cập nhật tồn kho
                 $productModel = Product::find($product['id']);
                 $productBatch = $productModel->batches()->where('product_id', $product['id'])->first();
 //                dd($productBatch);
-               $productBatch->quantity -= $product['quantity'];
+                $productBatch->quantity -= $product['quantity'];
+                $detail->product_batch_id = $productBatch->id;
                 $productBatch->save();
+
+                $detail->save();
             }
 
             DB::commit();

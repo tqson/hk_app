@@ -94,7 +94,7 @@
                                     <th width="10%">Đơn vị</th>
                                     <th width="10%">Tồn kho</th>
                                     <th width="10%">Số lượng</th>
-                                    <th width="10%">Số lô</th>
+{{--                                    <th width="10%">Số lô</th>--}}
                                     <th width="15%">Đơn giá</th>
                                     <th width="15%">Thành tiền</th>
                                     <th width="5%"></th>
@@ -219,7 +219,7 @@
                 const query = $(this).val();
                 if (query.length >= 2 || query.length === 0) {
                     $.ajax({
-                        url: "{{ route('api.products.search') }}",
+                        url: "{{ route('api.products.search-sale') }}",
                         method: 'GET',
                         data: { search: query },
                         success: function(data) {

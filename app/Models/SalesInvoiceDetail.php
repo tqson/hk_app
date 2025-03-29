@@ -19,7 +19,8 @@ class SalesInvoiceDetail extends Model
         'product_id',
         'quantity',
         'price',
-        'created_at'
+        'created_at',
+        'product_batch_id',
     ];
 
     public $timestamps = false;
@@ -38,5 +39,10 @@ class SalesInvoiceDetail extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function productBatch()
+    {
+        return $this->belongsTo(ProductBatch::class);
     }
 }

@@ -94,7 +94,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // API routes for AJAX requests
-    Route::get('api/products/search', [ProductController::class, 'search'])->name('api.products.search');
+    Route::get('api/products/search-sale', [ProductController::class, 'searchSale'])->name('api.products.search-sale');
     Route::get('api/suppliers/search', [SupplierController::class, 'search'])->name('api.suppliers.search');
 
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');

@@ -67,7 +67,7 @@
                                         <th width="5%">STT</th>
                                         <th width="25%">Tên sản phẩm</th>
                                         <th width="10%">Đơn vị</th>
-                                        <th width="10%">Số lô</th>
+{{--                                        <th width="10%">Số lô</th>--}}
                                         <th width="15%">Số lượng đã mua</th>
                                         <th width="15%">Số lượng hoàn trả</th>
                                         <th width="15%">Giá trị hoàn</th>
@@ -76,7 +76,7 @@
                                     </thead>
                                     <tbody>
                                     <tr id="noProductRow">
-                                        <td colspan="8" class="text-center">Chưa có sản phẩm nào được chọn</td>
+                                        <td colspan="7" class="text-center">Chưa có sản phẩm nào được chọn</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -202,7 +202,7 @@
                                     data-detail-id="${item.id}"
                                     data-name="${item.product.name}"
                                     data-unit="${item.product.unit}"
-                                    data-batch="${item.product.batch_number || 'N/A'}"
+                                    data-batch="${item.product_batch_id || 'N/A'}"
                                     data-quantity="${item.quantity}"
                                     data-price="${item.price}">
                                     ${item.product.name} - SL: ${item.quantity}
@@ -232,7 +232,7 @@
                         unit: productUnit,
                         batch: productBatch,
                         purchased_quantity: purchasedQuantity,
-                        return_quantity: 1, // Mặc định là 1
+                        return_quantity: 1,
                         price: productPrice
                     };
 
@@ -271,7 +271,7 @@
                         <td>${index + 1}</td>
                         <td>${product.name}</td>
                         <td>${product.unit}</td>
-                        <td>${product.batch}</td>
+<!--                        <td>${product.batch}</td>-->
                         <td>${product.purchased_quantity}</td>
                         <td>
                             <input type="number" class="form-control return-quantity"
