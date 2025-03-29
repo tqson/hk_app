@@ -153,10 +153,12 @@
             // Xử lý khi chọn hóa đơn bán hàng
             $('#sales_invoice_id').change(function() {
                 const invoiceId = $(this).val();
+
+                // Reset sản phẩm đã chọn trước khi tải hóa đơn mới
+                resetProductSelection();
+
                 if (invoiceId) {
                     fetchInvoiceDetails(invoiceId);
-                } else {
-                    resetProductSelection();
                 }
             });
 

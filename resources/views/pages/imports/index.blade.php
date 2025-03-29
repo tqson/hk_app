@@ -222,8 +222,8 @@
                         </div>
                         <div class="form-group">
                             <label for="payment_amount">Số tiền thanh toán (VNĐ):</label>
-                            <input type="number" class="form-control" id="payment_amount" name="payment_amount" min="0"
-                                   step="1000" required>
+                            <input type="number" class="form-control" id="payment_amount" name="payment_amount" min="1"
+                                   required>
                             <small class="text-danger" id="payment_error"></small>
                         </div>
                     </div>

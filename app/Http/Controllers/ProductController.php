@@ -259,12 +259,13 @@ class ProductController extends Controller
             ->with('success', 'Sản phẩm đã được xóa thành công.');
     }
 
-    public function search(Request $request)
+    public function search1(Request $request)
     {
         $query = $request->get('search');
         $products = Product::where('name', 'like', "%{$query}%")
             ->with(['category', 'batches'])
             ->where('status', true)
+            ->limit(10)
             ->get();
 
         $products->each(function ($product) {
@@ -272,6 +273,50 @@ class ProductController extends Controller
         });
 
         return response()->json($products);
+    }
+
+    public function search(Request $request)
+    {
+        $query = Product::query()->where('status', true);
+
+        // Tìm kiếm theo từ khóa
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', "%{$searchTerm}%")
+                    ->orWhere('id', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Lấy sản phẩm mới nhất nếu không có từ khóa tìm kiếm
+        if ($request->has('recent') && $request->recent) {
+            $query->latest('id');
+
+            if ($request->has('limit')) {
+                $query->limit($request->limit);
+            } else {
+                $query->limit(10);
+            }
+        }
+
+        // Chỉ lấy sản phẩm có tồn kho
+        if ($request->has('has_stock') && $request->has_stock) {
+            $query->whereHas('batches', function($q) {
+                $q->whereRaw('quantity > 0');
+            });
+        }
+
+        // Lấy thông tin tồn kho
+        $products = $query->with(['batches' => function($q) {
+            $q->select('product_batches.id', 'product_id', 'batch_number', 'manufacturing_date', 'expiry_date', 'quantity');
+        }])->get();
+
+        // Tính tổng tồn kho cho mỗi sản phẩm
+        $products->each(function($product) {
+            $product->quantity = $product->batches->sum('quantity');
+        });
+
+        return $products;
     }
 
     /**

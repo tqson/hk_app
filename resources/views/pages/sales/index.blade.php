@@ -215,9 +215,9 @@
             let totalAmount = 0;
 
             // Tìm kiếm sản phẩm
-            $('#productSearch').on('input', function() {
+            $('#productSearch').on('input click', function() {
                 const query = $(this).val();
-                if (query.length >= 2) {
+                if (query.length >= 2 || query.length === 0) {
                     $.ajax({
                         url: "{{ route('api.products.search') }}",
                         method: 'GET',
@@ -552,6 +552,32 @@
                         toastr.error('Có lỗi xảy ra khi tạo hóa đơn!');
                     }
                 });
+            }
+
+            // Xử lý reset form sau khi thanh toán
+            function resetForm() {
+                // Reset giỏ hàng
+                cart = [];
+                totalAmount = 0;
+
+                // Reset bảng giỏ hàng
+                $('#cartTable tbody').html('');
+
+                // Reset các trường nhập liệu
+                $('#discount').val(0);
+                $('#cashAmount').val(0).prop('disabled', false);
+                $('#transferAmount').val(0).prop('disabled', false);
+                $('#notes').val('');
+                $('#productSearch').val('');
+
+                // Reset các hiển thị tiền
+                $('#totalAmount').val(formatCurrency(0));
+                $('#finalAmount').val(formatCurrency(0));
+                $('#changeAmount').val(formatCurrency(0));
+
+                // Reset trạng thái nút
+                $('#paymentBtn').prop('disabled', true);
+                $('#qrCodeBtn').prop('disabled', false);
             }
 
             // Đóng kết quả tìm kiếm khi click ra ngoài

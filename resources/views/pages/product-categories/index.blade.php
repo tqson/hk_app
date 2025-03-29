@@ -44,18 +44,18 @@
                                     <td>{{ $categories->firstItem() + $index }}</td>
                                     <td>{{ $category->name }}</td>
                                     <td>{{ $category->created_at->format('d/m/Y') }}</td>
-                                    <td class="text-center">
-                                        <a href="{{ route('product-categories.show', $category->id) }}" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i> Chi tiết
+                                    <td class="text-left" width="150px">
+                                        <a href="{{ route('product-categories.show', $category->id) }}" class="btn btn-sm">
+                                            <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('product-categories.edit', $category->id) }}" class="btn btn-sm btn-info">
-                                            <i class="fas fa-edit"></i> Sửa
+                                        <a href="{{ route('product-categories.edit', $category->id) }}" class="btn btn-sm">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                         <form action="{{ route('product-categories.destroy', $category->id) }}" method="POST" style="display: inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
-                                                <i class="fas fa-trash"></i> Xóa
+                                            <button type="submit" class="btn btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
                                     </td>

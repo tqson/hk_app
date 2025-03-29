@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductBatch;
 use App\Models\ReturnInvoice;
 use App\Models\ReturnInvoiceDetail;
 use App\Models\SalesInvoice;
@@ -116,9 +117,15 @@ class ReturnController extends Controller
                     $detail->save();
 
                     // Cập nhật tồn kho
-                    $productModel = Product::find($product['id']);
-                    $productModel->stock += $product['return_quantity'];
-                    $productModel->save();
+//                    $productModel = Product::find($product['id']);
+//                    $productModel->stock += $product['return_quantity'];
+//                    $productModel->save();
+
+                    $productBatch = ProductBatch::find($product['batch_id']);
+                    if ($productBatch) {
+                        $productBatch->quantity += $product['return_quantity'];
+                        $productBatch->save();
+                    }
                 }
             }
 

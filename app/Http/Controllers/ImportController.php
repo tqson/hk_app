@@ -46,7 +46,7 @@ class ImportController extends Controller
             'debt_amount' => 'required|numeric|min:0',
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',
-            'products.*.product_batch_id' => 'nullable|exists:product_batches,id',
+            'products.*.product_batch_id' => 'required|exists:product_batches,id', // Changed to required
             'products.*.quantity' => 'required|integer|min:1',
             'products.*.import_price' => 'required|numeric|min:0',
             'products.*.total_price' => 'required|numeric|min:0',
@@ -66,55 +66,29 @@ class ImportController extends Controller
             ]);
 
             foreach ($request->products as $item) {
-                // Create import item
+                // Create import item with batch_id
                 $importItem = $import->items()->create([
                     'product_id' => $item['product_id'],
+                    'product_batch_id' => $item['product_batch_id'], // Always set batch_id
                     'quantity' => $item['quantity'],
                     'import_price' => $item['import_price'],
                     'total_price' => $item['total_price'],
                 ]);
 
-//                dump($item);
-                // Handle product batch
-                if (isset($item['product_batch_id']) && $item['product_batch_id']) {
-                    // Update existing batch
-                    $batch = ProductBatch::findOrFail($item['product_batch_id']);
-                    $batch->quantity += $item['quantity'];
-                    $batch->save();
-
-                    // Update the import item with the batch ID
-                    $importItem->product_batch_id = $batch->id;
-                    $importItem->save();
-//                    dump($batch);
-                } else {
-                    // Create new batch if batch details are provided
-                    if (isset($item['batch_number']) && isset($item['expiry_date'])) {
-                        $batch = ProductBatch::create([
-                            'product_id' => $item['product_id'],
-                            'batch_number' => $item['batch_number'],
-                            'manufacturing_date' => $item['manufacturing_date'] ?? null,
-                            'expiry_date' => $item['expiry_date'],
-                            'quantity' => $item['quantity'],
-                            'import_price' => $item['import_price'],
-                            'status' => true,
-                        ]);
-
-                        // Update the import item with the new batch ID
-                        $importItem->product_batch_id = $batch->id;
-                        $importItem->save();
-                    }
-                }
+                // Update batch quantity
+                $batch = ProductBatch::findOrFail($item['product_batch_id']);
+                $batch->quantity += $item['quantity'];
+                $batch->save();
             }
 
-//            die();
             // Create payment history if paid amount > 0
             if ($request->paid_amount > 0) {
                 PaymentHistory::create([
                     'import_id' => $import->id,
                     'amount' => $request->paid_amount,
                     'remaining_debt' => $request->debt_amount,
-                    'payment_date' => now(), // Add current date as payment date
-                    'payment_method' => $request->payment_method ?? 'cash', // Add payment method if available
+                    'payment_date' => now(),
+                    'payment_method' => $request->payment_method ?? 'cash',
                 ]);
             }
 
