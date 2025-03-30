@@ -371,29 +371,40 @@
                 <div class="ant-card-head-title">Danh sách phiếu xuất hủy</div>
             </div>
             <div class="ant-card-body">
-                <!-- Filters -->
-                <div class="filter-row">
-                    <div class="col-md-5 p-0">
-                        <form action="{{ route('disposal.index') }}" method="GET" class="ant-input-search">
-                            <input type="text" name="search" class="ant-input" placeholder="Tìm kiếm theo mã phiếu..." value="{{ request('search') }}">
-                            <button class="ant-btn ant-btn-primary" type="submit">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </form>
+                <!-- Filters and Search -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Tìm kiếm và lọc</h6>
                     </div>
-                    <div class="col-md-7 p-0">
-                        <form action="{{ route('disposal.index') }}" method="GET" class="date-range-filter">
-                            <div class="ant-form-item">
-                                <label for="start_date">Từ:</label>
-                                <input type="date" id="start_date" name="start_date" class="ant-input" value="{{ request('start_date') }}">
+                    <div class="card-body">
+                        <form action="{{ route('disposal.index') }}" method="GET" class="mb-0">
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="search">Tìm kiếm:</label>
+                                    <input type="text" class="form-control" id="search" name="search"
+                                           placeholder="Mã phiếu xuất hủy" value="{{ request('search') }}">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="start_date">Từ ngày:</label>
+                                    <input type="date" class="form-control" id="start_date" name="start_date"
+                                           value="{{ request('start_date') }}">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="end_date">Đến ngày:</label>
+                                    <input type="date" class="form-control" id="end_date" name="end_date"
+                                           value="{{ request('end_date') }}">
+                                </div>
+
+                                <div class="col-md-1 mb-3 d-flex align-items-end gap-3">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+
+                                    <a href="{{ route('disposal.index') }}" class="btn btn-secondary btn-block">
+                                        <i class="fas fa-redo"></i>
+                                    </a>
+                                </div>
                             </div>
-                            <div class="ant-form-item">
-                                <label for="end_date">Đến:</label>
-                                <input type="date" id="end_date" name="end_date" class="ant-input" value="{{ request('end_date') }}">
-                            </div>
-                            <button type="submit" class="ant-btn ant-btn-primary">
-                                <i class="fas fa-filter"></i> Lọc
-                            </button>
                         </form>
                     </div>
                 </div>
@@ -401,36 +412,108 @@
                 <!-- Table -->
                 @if($disposals->count() > 0)
                     <div class="table-responsive">
-                        <table class="ant-table">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
                             <thead>
                             <tr>
                                 <th style="width: 60px">STT</th>
                                 <th>Mã phiếu</th>
                                 <th>Ngày xuất hủy</th>
                                 <th>Tổng giá trị hủy</th>
-                                <th>Người tạo</th>
                                 <th style="width: 100px">Hành động</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($disposals as $key => $disposal)
+                            @forelse($disposals as $key => $disposal)
                                 <tr>
                                     <td>{{ $disposals->firstItem() + $key }}</td>
                                     <td>
-                                        <span class="badge badge-danger">{{ $disposal->disposal_code }}</span>
+                                        <span class="badge badge-danger">{{ $disposal->invoice_code }}</span>
                                     </td>
                                     <td>{{ $disposal->created_at->format('d/m/Y H:i') }}</td>
-                                    <td class="text-danger" style="font-weight: 600">{{ number_format($disposal->total_amount, 0, ',', '.') }} VNĐ</td>
-                                    <td>{{ $disposal->user->name ?? 'N/A' }}</td>
+                                    <td class="text-danger font-weight-bold">{{ number_format($disposal->total_amount, 0, ',', '.') }} đ</td>
                                     <td>
-                                        <a href="{{ route('disposal.show', $disposal) }}" class="ant-btn ant-btn-primary ant-btn-sm">
-                                            <i class="fas fa-eye"></i> Chi tiết
+                                        <a href="{{ route('disposal.show', $disposal) }}" class="action-dropdown-item">
+                                            <i class="fas fa-eye"></i> Xem chi tiết
                                         </a>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center py-5">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <i class="fas fa-trash-alt fa-3x text-gray-300 mb-3"></i>
+                                            <h5 class="text-gray-700">Không tìm thấy phiếu xuất hủy nào</h5>
+                                            <p class="text-gray-500">Hãy tạo phiếu xuất hủy mới hoặc thay đổi bộ lọc tìm kiếm</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
                             </tbody>
                         </table>
+
+                        <!-- Ant Design style pagination -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="pagination-nav">
+                                <ul class="pagination mb-0">
+                                    <!-- First Page -->
+                                    <li class="page-item {{ $disposals->onFirstPage() ? 'disabled' : '' }}">
+                                        <a class="page-link" href="{{ $disposals->url(1) }}" aria-label="First">
+                                            <span aria-hidden="true">&laquo;&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <!-- Previous Page -->
+                                    <li class="page-item {{ $disposals->onFirstPage() ? 'disabled' : '' }}">
+                                        <a class="page-link" href="{{ $disposals->previousPageUrl() }}"
+                                           aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+
+                                    <!-- Page Numbers -->
+                                    @php
+                                        $currentPage = $disposals->currentPage();
+                                        $lastPage = $disposals->lastPage();
+                                        $startPage = max($currentPage - 2, 1);
+                                        $endPage = min($currentPage + 2, $lastPage);
+                                    @endphp
+
+                                    @for ($i = $startPage; $i <= $endPage; $i++)
+                                        <li class="page-item {{ $currentPage == $i ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $disposals->url($i) }}">{{ $i }}</a>
+                                        </li>
+                                    @endfor
+
+                                    <!-- Next Page -->
+                                    <li class="page-item {{ $disposals->hasMorePages() ? '' : 'disabled' }}">
+                                        <a class="page-link" href="{{ $disposals->nextPageUrl() }}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    <!-- Last Page -->
+                                    <li class="page-item {{ $currentPage == $lastPage ? 'disabled' : '' }}">
+                                        <a class="page-link" href="{{ $disposals->url($lastPage) }}" aria-label="Last">
+                                            <span aria-hidden="true">&raquo;&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="pagination-size-selector">
+                                <span class="me-2">Hiển thị:</span>
+                                <select id="page-size" class="form-control form-control-sm d-inline-block"
+                                        style="width: auto;" onchange="changePageSize(this.value)">
+                                    <option
+                                        value="10" {{ request('perPage') == 10 || !request('perPage') ? 'selected' : '' }}>
+                                        10
+                                    </option>
+                                    <option value="20" {{ request('perPage') == 20 ? 'selected' : '' }}>20</option>
+                                    <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
+                                </select>
+                                <span class="ms-2">/ trang</span>
+                            </div>
+                        </div>
+
                     </div>
 
                     <!-- Pagination -->
@@ -450,3 +533,40 @@
         </div>
     </div>
 @endsection
+
+@section('scripts')
+    <script>
+        function toggleActionMenu(id) {
+            const dropdown = document.getElementById(`actionDropdown${id}`);
+            const allDropdowns = document.querySelectorAll('.action-dropdown-menu');
+
+            // Close all other dropdowns
+            allDropdowns.forEach(menu => {
+                if (menu.id !== `actionDropdown${id}` && menu.style.display === 'block') {
+                    menu.style.display = 'none';
+                }
+            });
+
+            // Toggle current dropdown
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches('.action-dropdown-toggle') &&
+                !event.target.closest('.action-dropdown-toggle')) {
+                const dropdowns = document.querySelectorAll('.action-dropdown-menu');
+                dropdowns.forEach(dropdown => {
+                    dropdown.style.display = 'none';
+                });
+            }
+        });
+
+        function changePageSize(perPage) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('perPage', perPage);
+            window.location.href = url.toString();
+        }
+    </script>
+@endsection
+

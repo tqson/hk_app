@@ -57,7 +57,7 @@ class DisposalInvoiceController extends Controller
         })->get();
 
         $lastDisposal = DisposalInvoice::latest()->first();
-        $lastId = $lastDisposal ? intval(substr($lastDisposal->disposal_code, 3)) : 0;
+        $lastId = $lastDisposal ? intval(substr($lastDisposal->invoice_code, 3)) : 0;
         $disposalCode = 'HUY' . str_pad($lastId + 1, 6, '0', STR_PAD_LEFT);
 
         return view('pages.disposal.create', compact('products', 'disposalCode'));
@@ -84,7 +84,7 @@ class DisposalInvoiceController extends Controller
             // Tạo phiếu xuất hủy
             $invoice = DisposalInvoice::create([
                 'user_id' => auth()->id(),
-                'disposal_code' => $request->disposal_code,
+                'invoice_code' => $request->invoice_code,
                 'total_amount' => 0, // Sẽ cập nhật sau
                 'note' => $request->note,
                 'disposal_date' => now(),

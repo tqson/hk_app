@@ -335,8 +335,8 @@
                         </div>
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="disposal_code">Mã phiếu hủy:</label>
-                                <input type="text" id="disposal_code" name="disposal_code" class="form-control" value="{{ $disposalCode }}" readonly>
+                                <label for="invoice_code">Mã phiếu hủy:</label>
+                                <input type="text" id="invoice_code" name="invoice_code" class="form-control" value="{{ $disposalCode }}" readonly>
                             </div>
 
                             <div class="form-group">
@@ -489,7 +489,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="batchSelectionModalLabel">Chọn lô cho sản phẩm: ${product.name}</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" class="close border-0" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>

@@ -126,7 +126,6 @@ class SalesController extends Controller
         return view('pages.sales.invoice-list', compact('invoices'));
     }
 
-    // Thêm phương thức để xem chi tiết hóa đơn
     public function invoiceDetail($id)
     {
         $invoice = SalesInvoice::with(['details.product', 'user'])->findOrFail($id);

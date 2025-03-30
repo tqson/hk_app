@@ -188,7 +188,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="qrCodeModalLabel">Quét mã QR để thanh toán</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close border-0" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -449,6 +449,15 @@
                 }
 
                 $('#qrCodeModal').modal('show');
+            });
+
+            $('.modal-footer .btn-secondary').on('click', function() {
+                $('#qrCodeModal').modal('hide');
+            });
+
+            // Hoặc bạn cũng có thể xử lý khi click vào nút X (close) ở góc trên bên phải
+            $('.modal-header .close').on('click', function() {
+                $('#qrCodeModal').modal('hide');
             });
 
             // Xử lý khi click nút Thanh toán trong modal QR

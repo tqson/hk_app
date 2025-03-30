@@ -27,10 +27,10 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-        }
+        /*.card:hover {*/
+        /*    transform: translateY(-5px);*/
+        /*    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;*/
+        /*}*/
 
         .rounded-top {
             border-top-left-radius: 0.35rem !important;
@@ -53,18 +53,49 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- Tìm kiếm -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <form action="{{ route('imports.index') }}" method="GET">
-                                    <div class="input-group">
-                                        <input type="text" name="search" class="form-control"
-                                               placeholder="Tìm kiếm theo mã hóa đơn..."
-                                               value="{{ request('search') }}">
-                                        <div class="ms-3 input-group-append">
-                                            <button class="btn btn-primary" type="submit">
+                        <!-- Filters and Search -->
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Tìm kiếm và lọc</h6>
+                            </div>
+                            <div class="card-body">
+                                <form action="{{ route('imports.index') }}" method="GET" class="mb-0">
+                                    <div class="row">
+                                        <div class="col-md-3 mb-3">
+                                            <label for="search">Tìm kiếm:</label>
+                                            <input type="search" class="form-control" id="search" name="search"
+                                                   placeholder="Mã nhập hàng hoặc nhà cung cấp" value="{{ request('search') }}">
+                                        </div>
+
+                                        <div class="col-md-2 mb-3">
+                                            <label for="date_from">Từ ngày:</label>
+                                            <input type="date" class="form-control" id="date_from" name="date_from"
+                                                   value="{{ request('date_from') }}">
+                                        </div>
+
+                                        <div class="col-md-2 mb-3">
+                                            <label for="date_to">Đến ngày:</label>
+                                            <input type="date" class="form-control" id="date_to" name="date_to"
+                                                   value="{{ request('date_to') }}">
+                                        </div>
+
+                                        <div class="col-md-2 mb-3">
+                                            <label for="payment_status">Trạng thái thanh toán:</label>
+                                            <select class="form-control" id="payment_status" name="payment_status">
+                                                <option value="">Tất cả</option>
+                                                <option value="paid" {{ request('payment_status') === 'paid' ? 'selected' : '' }}>Đã thanh toán</option>
+                                                <option value="unpaid" {{ request('payment_status') === 'unpaid' ? 'selected' : '' }}>Còn nợ</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col mb-3 d-flex align-items-end gap-3">
+                                            <button type="submit" class="btn btn-primary btn-block">
                                                 <i class="fas fa-search"></i>
                                             </button>
+
+                                            <a href="{{ route('imports.index') }}" class="btn btn-secondary btn-block">
+                                                <i class="fas fa-redo"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </form>
@@ -179,10 +210,66 @@
                             </table>
                         </div>
 
-                        <!-- Phân trang -->
-                        <div class="mt-3">
-                            {{ $imports->appends(request()->query())->links() }}
+                        <!-- Ant Design style pagination -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="pagination-nav">
+                                <ul class="pagination mb-0">
+                                    <!-- First Page -->
+                                    <li class="page-item {{ $imports->onFirstPage() ? 'disabled' : '' }}">
+                                        <a class="page-link" href="{{ $imports->url(1) }}" aria-label="First">
+                                            <span aria-hidden="true">&laquo;&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <!-- Previous Page -->
+                                    <li class="page-item {{ $imports->onFirstPage() ? 'disabled' : '' }}">
+                                        <a class="page-link" href="{{ $imports->previousPageUrl() }}"
+                                           aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+
+                                    <!-- Page Numbers -->
+                                    @php
+                                        $currentPage = $imports->currentPage();
+                                        $lastPage = $imports->lastPage();
+                                        $startPage = max($currentPage - 2, 1);
+                                        $endPage = min($currentPage + 2, $lastPage);
+                                    @endphp
+
+                                    @for ($i = $startPage; $i <= $endPage; $i++)
+                                        <li class="page-item {{ $currentPage == $i ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $imports->url($i) }}">{{ $i }}</a>
+                                        </li>
+                                    @endfor
+
+                                    <!-- Next Page -->
+                                    <li class="page-item {{ $imports->hasMorePages() ? '' : 'disabled' }}">
+                                        <a class="page-link" href="{{ $imports->nextPageUrl() }}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    <!-- Last Page -->
+                                    <li class="page-item {{ $currentPage == $lastPage ? 'disabled' : '' }}">
+                                        <a class="page-link" href="{{ $imports->url($lastPage) }}" aria-label="Last">
+                                            <span aria-hidden="true">&raquo;&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="pagination-size-selector">
+                                <span class="me-2">Hiển thị:</span>
+                                <select id="page-size" class="form-control form-control-sm d-inline-block"
+                                        style="width: auto;" onchange="changePageSize(this.value)">
+                                    <option value="10" {{ request('perPage') == 10 || !request('perPage') ? 'selected' : '' }}>10</option>
+                                    <option value="20" {{ request('perPage') == 20 ? 'selected' : '' }}>20</option>
+                                    <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
+                                </select>
+                                <span class="ms-2">/ trang</span>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -197,7 +284,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="paymentModalLabel">Cập nhật thanh toán</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close border-0" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -241,6 +328,13 @@
 
 @section('scripts')
     <script>
+
+        function changePageSize(perPage) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('perPage', perPage);
+            window.location.href = url.toString();
+        }
+
         $(document).ready(function () {
             $('#paymentModal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget);

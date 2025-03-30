@@ -29,7 +29,7 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="category_id">Danh mục <span class="text-danger">*</span></label>
+                                    <label for="category_id">Nhóm sản phẩm <span class="text-danger">*</span></label>
                                     <select class="form-control @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>
                                         <option value="">-- Chọn danh mục --</option>
                                         @foreach($categories as $category)
@@ -136,8 +136,6 @@
                                 <th>Hạn sử dụng</th>
                                 <th>Số lượng</th>
                                 <th>Giá nhập</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
                             </tr>
                             </thead>
                             <tbody id="batchesTable">
@@ -145,45 +143,30 @@
                                 <tr>
                                     <td>
                                         <input type="hidden" name="batches[{{ $index }}][id]" value="{{ $batch->id }}">
-                                        <input type="text" class="form-control" name="batches[{{ $index }}][batch_number]" value="{{ $batch->batch_number }}" required>
+                                        {{ $batch->batch_number }}
+                                        <input type="hidden" name="batches[{{ $index }}][batch_number]" value="{{ $batch->batch_number }}">
                                     </td>
                                     <td>
-                                        <input type="date" class="form-control" name="batches[{{ $index }}][manufacturing_date]" value="{{ $batch->manufacturing_date->format('Y-m-d') }}" required>
+                                        {{ $batch->manufacturing_date->format('d/m/Y') }}
+                                        <input type="hidden" name="batches[{{ $index }}][manufacturing_date]" value="{{ $batch->manufacturing_date->format('Y-m-d') }}">
                                     </td>
                                     <td>
-                                        <input type="date" class="form-control" name="batches[{{ $index }}][expiry_date]" value="{{ $batch->expiry_date->format('Y-m-d') }}" required>
+                                        {{ $batch->expiry_date->format('d/m/Y') }}
+                                        <input type="hidden" name="batches[{{ $index }}][expiry_date]" value="{{ $batch->expiry_date->format('Y-m-d') }}">
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control" name="batches[{{ $index }}][quantity]" value="{{ $batch->quantity }}" min="0" required>
+                                        <input type="number" class="form-control" name="batches[{{ $index }}][quantity]" value="{{ $batch->quantity }}" min="0" required readonly>
                                     </td>
                                     <td>
                                         <div class="input-group">
-                                            <input type="number" class="form-control" name="batches[{{ $index }}][import_price]" value="{{ $batch->import_price }}" min="0" required>
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">đ</span>
-                                            </div>
+                                            <input type="number" class="form-control" name="batches[{{ $index }}][import_price]" value="{{ $batch->import_price }}" min="0" required readonly>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <select class="form-control" name="batches[{{ $index }}][status]">
-                                            <option value="active" {{ $batch->status == 'active' ? 'selected' : '' }}>Đang sử dụng</option>
-                                            <option value="inactive" {{ $batch->status == 'inactive' ? 'selected' : '' }}>Ngừng sử dụng</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-danger remove-batch" data-batch-id="{{ $batch->id }}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
                     </div>
-
-                    <button type="button" class="btn btn-info mb-4" id="addBatchBtn">
-                        <i class="fas fa-plus"></i> Thêm lô mới
-                    </button>
 
                     <div class="form-group mt-4">
                         <button type="submit" class="btn btn-primary">
@@ -193,6 +176,8 @@
                             <i class="fas fa-arrow-left"></i> Quay lại
                         </a>
                     </div>
+
+
                 </form>
             </div>
         </div>

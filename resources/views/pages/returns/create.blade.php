@@ -20,18 +20,15 @@
                                     <div class="form-group">
                                         <label for="sales_invoice_id">Hóa đơn bán hàng:</label>
                                         <div class="input-group">
-                                            <select class="form-control me-4" id="sales_invoice_id" name="sales_invoice_id" required>
-                                                <option value="">-- Chọn hóa đơn --</option>
-                                                @foreach($recentInvoices as $invoice)
-                                                    <option value="{{ $invoice->id }}">HD{{ str_pad($invoice->id, 6, '0', STR_PAD_LEFT) }} - {{ Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y H:i') }}</option>
-                                                @endforeach
-                                            </select>
+                                            <input type="text" class="form-control" id="invoice_search_input" placeholder="Nhập mã hóa đơn (HD000001)..." autocomplete="off">
+                                            <input type="hidden" id="sales_invoice_id" name="sales_invoice_id" required>
                                             <div class="input-group-append">
                                                 <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#searchInvoiceModal">
                                                     <i class="fas fa-search"></i>
                                                 </button>
                                             </div>
                                         </div>
+                                        <div id="invoice_search_results" class="position-absolute w-100 mt-1 shadow-sm" style="z-index: 1000; max-height: 300px; overflow-y: auto; display: none;"></div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -123,7 +120,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="searchInvoiceModalLabel">Tìm kiếm hóa đơn</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close border-0" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -344,6 +341,8 @@
             // Reset form khi chọn hóa đơn mới
             function resetProductSelection() {
                 $('#purchase_date').val('');
+                $('#invoice_search_input').val('');
+                $('#sales_invoice_id').val('');
                 $('#product_selection').empty().append('<option value="">-- Chọn sản phẩm --</option>').prop('disabled', true);
                 $('#addProductBtn').prop('disabled', true);
                 selectedProducts = [];
@@ -356,6 +355,7 @@
             $('#invoice_search').on('input', function() {
                 const searchTerm = $(this).val().trim();
                 if (searchTerm.length > 0) {
+                    console.log('searchTerm:', searchTerm);
                     $.ajax({
                         url: "{{ route('returns.search-invoices') }}",
                         type: 'GET',
@@ -486,6 +486,105 @@
 
                 return `${day}/${month}/${year} ${hours}:${minutes}`;
             }
+
+            // Xử lý khi click vào input tìm kiếm hóa đơn
+            $('#invoice_search_input').on('click', function() {
+                // Nếu input trống, hiển thị 10 hóa đơn mới nhất
+                if ($(this).val().trim() === '') {
+                    loadRecentInvoices();
+                } else {
+                    // Nếu đã có text, hiển thị kết quả tìm kiếm
+                    const searchTerm = $(this).val().trim();
+                    searchInvoices(searchTerm);
+                }
+            });
+
+            // Xử lý tìm kiếm hóa đơn khi nhập text
+            $('#invoice_search_input').on('input', function() {
+                const searchTerm = $(this).val().trim();
+                if (searchTerm.length > 0) {
+                    searchInvoices(searchTerm);
+                } else {
+                    // Nếu xóa hết text, hiển thị 10 hóa đơn mới nhất
+                    loadRecentInvoices();
+                }
+            });
+
+            // Hàm tải 10 hóa đơn mới nhất
+            function loadRecentInvoices() {
+                // Sử dụng dữ liệu từ biến recentInvoices đã có sẵn
+                const recentInvoices = @json($recentInvoices);
+                displayInvoiceResults(recentInvoices);
+            }
+
+            // Hàm tìm kiếm hóa đơn
+            function searchInvoices(searchTerm) {
+                console.log('search invoice')
+                $.ajax({
+                    url: "{{ route('returns.search-invoices') }}",
+                    type: 'GET',
+                    data: { search: searchTerm },
+                    dataType: 'json',
+                    success: function(response) {
+                        displayInvoiceResults(response);
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr);
+                    }
+                });
+            }
+
+            // Hàm hiển thị kết quả hóa đơn (dùng chung cho cả hiển thị mới nhất và tìm kiếm)
+            function displayInvoiceResults(invoices) {
+                const resultsDiv = $('#invoice_search_results');
+                resultsDiv.empty();
+
+                if (invoices.length === 0) {
+                    resultsDiv.append('<p class="p-2 bg-white border">Không tìm thấy hóa đơn nào</p>').show();
+                    return;
+                }
+
+                const list = $('<div class="list-group bg-white border"></div>');
+
+                invoices.forEach(function(invoice) {
+                    const invoiceDate = new Date(invoice.created_at);
+                    const invoiceId = 'HD' + invoice.id.toString().padStart(6, '0');
+
+                    list.append(`
+            <a href="#" class="list-group-item list-group-item-action py-2 select-invoice-inline" data-id="${invoice.id}">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">${invoiceId}</h6>
+                    <small>${formatDate(invoiceDate)}</small>
+                </div>
+                <p class="mb-1 small">Tổng tiền: ${formatCurrency(invoice.total_amount - invoice.discount)}</p>
+            </a>
+        `);
+                });
+
+                resultsDiv.append(list).show();
+
+                // Xử lý khi chọn hóa đơn từ kết quả
+                $('.select-invoice-inline').click(function(e) {
+                    e.preventDefault();
+                    const invoiceId = $(this).data('id');
+                    const invoiceText = $(this).find('h6').text();
+
+                    $('#invoice_search_input').val(invoiceText);
+                    $('#sales_invoice_id').val(invoiceId);
+                    $('#invoice_search_results').hide();
+
+                    // Gọi hàm lấy chi tiết hóa đơn
+                    fetchInvoiceDetails(invoiceId);
+                });
+            }
+
+            // Ẩn kết quả tìm kiếm khi click ra ngoài
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#invoice_search_input, #invoice_search_results').length) {
+                    $('#invoice_search_results').hide();
+                }
+            });
+
         });
     </script>
 @endsection

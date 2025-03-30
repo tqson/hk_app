@@ -62,8 +62,25 @@ class ReturnController extends Controller
     {
         $search = $request->input('search');
 
-        $invoices = SalesInvoice::where('id', 'LIKE', "%{$search}%")
-            ->orderBy('created_at', 'desc')
+        $query = SalesInvoice::query();
+
+        if ($search) {
+            // Nếu search bắt đầu bằng "HD", loại bỏ "HD" và các số 0 ở đầu để tìm theo ID
+            if (preg_match('/^HD0*(\d+)$/i', $search, $matches)) {
+                $invoiceId = $matches[1]; // Lấy số ID thực tế
+                $query->where('id', $invoiceId);
+            } else {
+                // Tìm kiếm theo ID hoặc thông tin khác
+                $query->where(function($q) use ($search) {
+                    $q->where('id', 'LIKE', "%{$search}%")
+                        ->orWhere('notes', 'LIKE', "%{$search}%");
+                    // Có thể thêm các trường khác để tìm kiếm nếu cần
+                });
+            }
+        }
+
+        // Luôn sắp xếp theo thời gian tạo giảm dần và giới hạn 10 kết quả
+        $invoices = $query->orderBy('created_at', 'desc')
             ->take(10)
             ->get();
 

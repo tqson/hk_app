@@ -12,18 +12,60 @@ use Illuminate\Support\Facades\DB;
 
 class ImportController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $imports = Import::with('supplier')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $query = Import::with('supplier');
 
+        // Search by import code or supplier name
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('import_code', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('supplier', function($sq) use ($searchTerm) {
+                        $sq->where('name', 'like', "%{$searchTerm}%");
+                    });
+            });
+        }
+
+        // Filter by date range
+        if ($request->has('date_from') && !empty($request->date_from)) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->has('date_to') && !empty($request->date_to)) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Filter by payment status
+        if ($request->has('payment_status') && !empty($request->payment_status)) {
+            if ($request->payment_status === 'paid') {
+                $query->where('debt_amount', 0);
+            } elseif ($request->payment_status === 'unpaid') {
+                $query->where('debt_amount', '>', 0);
+            }
+        }
+
+        // Set per page from request or default to 10
+        $perPage = $request->input('perPage', 10);
+
+        // Get imports with pagination
+        $imports = $query->orderBy('created_at', 'desc')
+            ->paginate($perPage)
+            ->appends($request->except('page'));
+
+        // Calculate totals (these will be for all records, not just the paginated ones)
         $totalDebt = Import::sum('debt_amount');
         $totalPaid = Import::sum('paid_amount');
         $totalAmount = Import::sum('final_amount');
 
+        // If you want totals for filtered results only, use the query builder:
+        // $totalDebt = $query->sum('debt_amount');
+        // $totalPaid = $query->sum('paid_amount');
+        // $totalAmount = $query->sum('final_amount');
+
         return view('pages.imports.index', compact('imports', 'totalDebt', 'totalPaid', 'totalAmount'));
     }
+
 
     public function create()
     {

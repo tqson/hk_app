@@ -202,7 +202,7 @@
                     <div class="card-body">
                         <div class="info-group">
                             <div class="info-label">Mã phiếu hủy:</div>
-                            <div class="info-value font-weight-bold">{{ $disposal->disposal_code }}</div>
+                            <div class="info-value font-weight-bold">{{ $disposal->invoice_code }}</div>
                         </div>
 
                         <div class="info-group">
@@ -210,10 +210,10 @@
                             <div class="info-value">{{ date('d/m/Y H:i', strtotime($disposal->created_at)) }}</div>
                         </div>
 
-                        <div class="info-group">
-                            <div class="info-label">Người tạo:</div>
-                            <div class="info-value">{{ $disposal->user->name ?? 'N/A' }}</div>
-                        </div>
+{{--                        <div class="info-group">--}}
+{{--                            <div class="info-label">Người tạo:</div>--}}
+{{--                            <div class="info-value">{{ $disposal->user->name ?? 'N/A' }}</div>--}}
+{{--                        </div>--}}
 
                         <div class="info-group">
                             <div class="info-label">Trạng thái:</div>

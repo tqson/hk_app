@@ -23,7 +23,7 @@
                                    placeholder="Tên sản phẩm" value="{{ request('search') }}">
                         </div>
                         <div class="col-md-2 mb-3">
-                            <label for="category_id">Danh mục:</label>
+                            <label for="category_id">Nhóm sản phẩm:</label>
                             <select class="form-control" id="category_id" name="category_id">
                                 <option value="">Tất cả danh mục</option>
                                 @foreach($categories as $category)
@@ -37,23 +37,21 @@
                             <label for="status">Trạng thái:</label>
                             <select class="form-control" id="status" name="status">
                                 <option value="">Tất cả trạng thái</option>
-                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Hoạt động</option>
-                                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Dừng hoạt động</option>
+                                <option value="1" {{ request('status') !== null && request('status') === '1' ? 'selected' : '' }}>Hoạt động</option>
+                                <option value="0" {{ request('status') !== null && request('status') === '0' ? 'selected' : '' }}>Dừng hoạt động</option>
                             </select>
                         </div>
-{{--                        <div class="col-md-2 mb-3">--}}
-{{--                            <label for="stock_filter">Tồn kho:</label>--}}
-{{--                            <select class="form-control" id="stock_filter" name="stock_filter">--}}
-{{--                                <option value="">Tất cả</option>--}}
-{{--                                <option value="in_stock" {{ request('stock_filter') == 'in_stock' ? 'selected' : '' }}>Còn hàng</option>--}}
-{{--                                <option value="out_of_stock" {{ request('stock_filter') == 'out_of_stock' ? 'selected' : '' }}>Hết hàng</option>--}}
-{{--                            </select>--}}
-{{--                        </div>--}}
 
                         <div class="col-md-1 mb-3 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary btn-block">
                                 <i class="fas fa-search"></i>
                             </button>
+                        </div>
+
+                        <div class="col-md-1 mb-3 d-flex align-items-end">
+                            <a href="{{ route('products.index') }}" class="btn btn-secondary btn-block">
+                                <i class="fas fa-redo"></i>
+                            </a>
                         </div>
                     </div>
                 </form>
@@ -75,8 +73,7 @@
                         <tr>
                             <th>STT</th>
                             <th>Tên sản phẩm</th>
-                            <th>Mã sản phẩm</th>
-                            <th>Danh mục</th>
+                            <th>Nhóm sản phẩm</th>
                             <th>Đơn vị</th>
                             <th>Giá bán</th>
                             <th>Tồn kho</th>
@@ -106,7 +103,6 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{ $product->sku }}</td>
                                 <td>{{ $product->category->name ?? 'N/A' }}</td>
                                 <td>{{ $product->unit }}</td>
                                 <td>{{ number_format($product->price, 0, ',', '.') }} đ</td>
@@ -127,7 +123,7 @@
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title" id="batchModalLabel{{ $product->id }}">Thông tin lô hàng - {{ $product->name }}</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <button type="button" class="close border-0" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
@@ -140,7 +136,6 @@
                                                                     <th>Ngày sản xuất</th>
                                                                     <th>Hạn sử dụng</th>
                                                                     <th>Số lượng</th>
-                                                                    <th>Trạng thái</th>
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -152,15 +147,6 @@
                                                                             {{ $batch->expiry_date->format('d/m/Y') }}
                                                                         </td>
                                                                         <td>{{ $batch->quantity }}</td>
-                                                                        <td>
-                                                                            @if($batch->status == 'active')
-                                                                                <span class="badge badge-success">Đang sử dụng</span>
-                                                                            @elseif($batch->status == 'inactive')
-                                                                                <span class="badge badge-success">Ngừng sử dụng</span>
-                                                                            @else
-                                                                                <span class="badge badge-danger">Hết hạn</span>
-                                                                            @endif
-                                                                        </td>
                                                                     </tr>
                                                                 @endforeach
                                                                 </tbody>
@@ -209,6 +195,10 @@
                                                 <div class="action-dropdown-divider"></div>
                                             </div>
                                         </div>
+                                    @else
+                                        <a href="{{ route('products.show', $product->id) }}" class="action-dropdown-item">
+                                            <i class="w-100 fas fa-eye"></i>
+                                        </a>
                                     @endif
 
                                 </td>
@@ -301,7 +291,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="deactivateModalLabel">Xác nhận dừng hoạt động</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close border-0" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -327,7 +317,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="activateModalLabel">Xác nhận kích hoạt</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close border-0" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -353,7 +343,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close border-0" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>

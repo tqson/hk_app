@@ -19,40 +19,6 @@
 
         <!-- Thông tin cơ bản -->
         <div class="row">
-{{--            <div class="col-xl-4 col-md-5">--}}
-{{--                <div class="card shadow mb-4">--}}
-{{--                    <div class="card-header py-3">--}}
-{{--                        <h6 class="m-0 font-weight-bold text-primary">Hình ảnh sản phẩm</h6>--}}
-{{--                    </div>--}}
-{{--                    <div class="card-body text-center">--}}
-{{--                        @if($product->image)--}}
-{{--                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-fluid mb-3" style="max-height: 300px;">--}}
-{{--                        @else--}}
-{{--                            <div class="text-center p-4 bg-light mb-3">--}}
-{{--                                <i class="fas fa-image fa-3x text-gray-400"></i>--}}
-{{--                                <p class="mt-2 text-gray-500">Chưa có hình ảnh</p>--}}
-{{--                            </div>--}}
-{{--                        @endif--}}
-
-{{--                        <div class="card bg-light mt-3">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <h6 class="font-weight-bold">Thông tin tồn kho</h6>--}}
-{{--                                <div class="d-flex justify-content-between align-items-center">--}}
-{{--                                    <span>Tổng tồn kho:</span>--}}
-{{--                                    <span class="font-weight-bold {{ $product->getTotalStockAttribute() > 0 ? 'text-success' : 'text-danger' }}">--}}
-{{--                                    {{ $product->getTotalStockAttribute() }} {{ $product->unit }}--}}
-{{--                                </span>--}}
-{{--                                </div>--}}
-{{--                                <div class="d-flex justify-content-between align-items-center mt-2">--}}
-{{--                                    <span>Tồn kho theo lô:</span>--}}
-{{--                                    <span>{{ $product->batches->sum('quantity') }} {{ $product->unit }}</span>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
             <div class="col-10 col-md-9">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
@@ -66,16 +32,12 @@
                                         <th style="width: 40%">Tên sản phẩm:</th>
                                         <td>{{ $product->name }}</td>
                                     </tr>
-{{--                                    <tr>--}}
-{{--                                        <th>Mã sản phẩm:</th>--}}
-{{--                                        <td>{{ $product->sku }}</td>--}}
-{{--                                    </tr>--}}
                                     <tr>
                                         <th>Mã vạch:</th>
                                         <td>{{ $product->barcode ?? 'Chưa có' }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Danh mục:</th>
+                                        <th>Nhóm sản phẩm:</th>
                                         <td>{{ $product->category->name ?? 'Không có' }}</td>
                                     </tr>
                                 </table>
@@ -135,7 +97,6 @@
                                 <th>Hạn sử dụng</th>
                                 <th>Số lượng</th>
                                 <th>Giá nhập</th>
-                                <th>Trạng thái</th>
                                 <th>Ngày tạo</th>
                             </tr>
                             </thead>
@@ -154,13 +115,6 @@
                                     </td>
                                     <td>{{ $batch->quantity }} {{ $product->unit }}</td>
                                     <td>{{ number_format($batch->import_price) }} đ</td>
-                                    <td>
-                                        @if($batch->status == 'active')
-                                            <span class="badge badge-success">Đang sử dụng</span>
-                                        @else
-                                            <span class="badge badge-secondary">Ngừng sử dụng</span>
-                                        @endif
-                                    </td>
                                     <td>{{ $batch->created_at->format('d/m/Y') }}</td>
                                 </tr>
                             @endforeach
@@ -201,15 +155,15 @@
                                 <tr>
                                     <td>
                                         <a href="{{ route('imports.show', $item->import_id) }}">
-                                            {{ $item->import->code ?? 'N/A' }}
+                                            {{ $item->import->import_code ?? 'N/A' }}
                                         </a>
                                     </td>
-                                    <td>{{ $item->import->import_date->format('d/m/Y') ?? 'N/A' }}</td>
-                                    <td>{{ $item->batch->batch_number ?? 'N/A' }}</td>
+                                    <td>{{ optional($item->import->expected_date)->format('d/m/Y') ?? 'N/A' }}</td>
+                                    <td>{{ optional($item->productBatch)->batch_number ?? 'N/A' }}</td>
                                     <td>{{ $item->quantity }} {{ $product->unit }}</td>
-                                    <td>{{ number_format($item->price) }} đ</td>
-                                    <td>{{ number_format($item->quantity * $item->price) }} đ</td>
-                                    <td>{{ $item->import->supplier->name ?? 'N/A' }}</td>
+                                    <td>{{ number_format($item->import_price) }} đ</td>
+                                    <td>{{ number_format($item->total_price) }} đ</td>
+                                    <td>{{ optional($item->import->supplier)->name ?? 'N/A' }}</td>
                                 </tr>
                             @endforeach
                             </tbody>

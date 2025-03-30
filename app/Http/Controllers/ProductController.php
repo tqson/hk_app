@@ -29,7 +29,7 @@ class ProductController extends Controller
         }
 
         // Lọc theo trạng thái
-        if ($request->has('status') && !empty($request->status)) {
+        if ($request->has('status') && $request->status !== null && $request->status !== '') {
             $query->where('status', $request->status);
         }
 
@@ -145,7 +145,7 @@ class ProductController extends Controller
     public function show($id)
     {
         // Tải sản phẩm cùng với các quan hệ cần thiết
-        $product = Product::with(['batches', 'category', 'importItems.import.supplier', 'importItems.batch'])
+        $product = Product::with(['batches', 'category', 'importItems.import.supplier', 'importItems.productBatch'])
             ->findOrFail($id);
 
         return view('pages.products.show', compact('product'));
