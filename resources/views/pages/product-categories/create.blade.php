@@ -14,7 +14,7 @@
                         <form action="{{ route('product-categories.store') }}" method="POST">
                             @csrf
                             <div class="form-group mb-3">
-                                <label for="name">Tên danh mục <span class="text-danger">*</span></label>
+                                <label for="name">Tên nhóm sản phẩm <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
                                 @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -28,7 +28,7 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary">Lưu danh mục</button>
+                                <button type="submit" class="btn btn-primary">Lưu nhóm sản phẩm</button>
                                 <a href="{{ route('product-categories.index') }}" class="btn btn-secondary">Hủy</a>
                             </div>
                         </form>

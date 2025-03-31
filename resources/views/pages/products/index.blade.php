@@ -25,7 +25,7 @@
                         <div class="col-md-2 mb-3">
                             <label for="category_id">Nhóm sản phẩm:</label>
                             <select class="form-control" id="category_id" name="category_id">
-                                <option value="">Tất cả danh mục</option>
+                                <option value="">Tất cả nhóm sản phẩm</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}

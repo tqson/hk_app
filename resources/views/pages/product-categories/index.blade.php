@@ -33,7 +33,7 @@
                             <thead>
                             <tr>
                                 <th>STT</th>
-                                <th>Tên danh mục</th>
+                                <th>Tên nhóm sản phẩm</th>
                                 <th>Ngày tạo</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -54,7 +54,7 @@
                                         <form action="{{ route('product-categories.destroy', $category->id) }}" method="POST" style="display: inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
+                                            <button type="submit" class="btn btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa nhóm sản phẩm này?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>

@@ -15,7 +15,7 @@
                             @csrf
                             @method('PUT')
                             <div class="form-group pb-3">
-                                <label for="name">Tên danh mục <span class="text-danger">*</span></label>
+                                <label for="name">Tên nhóm sản phẩm <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $category->name) }}" required>
                                 @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>

@@ -30,7 +30,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="category_id">Nhóm sản phẩm <span class="text-danger">*</span></label>
                                     <select class="form-control @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>
-                                        <option value="">-- Chọn danh mục --</option>
+                                        <option value="">-- Chọn nhóm sản phẩm --</option>
                                         @foreach($categories as $category)
                                             <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                                 {{ $category->name }}

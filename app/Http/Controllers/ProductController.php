@@ -23,7 +23,7 @@ class ProductController extends Controller
             });
         }
 
-        // Lọc theo danh mục
+        // Lọc theo nhóm sản phẩm
         if ($request->has('category_id') && !empty($request->category_id)) {
             $query->where('category_id', $request->category_id);
         }
@@ -61,7 +61,7 @@ class ProductController extends Controller
         $perPage = $request->input('perPage', 10); // Mặc định 10 sản phẩm mỗi trang
         $products = $query->paginate($perPage)->appends($request->except('page'));
 
-        // Lấy danh sách danh mục cho bộ lọc
+        // Lấy danh sách nhóm sản phẩm cho bộ lọc
         $categories = ProductCategory::all();
 
         return view('pages.products.index', compact('products', 'categories'));

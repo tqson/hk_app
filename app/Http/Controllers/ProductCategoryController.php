@@ -87,10 +87,10 @@ class ProductCategoryController extends Controller
     {
         $category = ProductCategory::findOrFail($id);
 
-        // Kiểm tra xem danh mục có sản phẩm không
+        // Kiểm tra xem nhóm sản phẩm có sản phẩm không
         if ($category->products()->count() > 0) {
             return redirect()->route('product-categories.index')
-                ->with('error', 'Không thể xóa danh mục này vì có sản phẩm liên quan.');
+                ->with('error', 'Không thể xóa nhóm sản phẩm này vì có sản phẩm liên quan.');
         }
 
         $category->delete();

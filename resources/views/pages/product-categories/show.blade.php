@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Chi tiết danh mục sản phẩm - HK LOVE')
+@section('title', 'Chi tiết nhóm sản phẩm - HK LOVE')
 
 @section('content')
     <div class="container-fluid">
@@ -8,11 +8,11 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Chi tiết danh mục sản phẩm</h3>
+                        <h3 class="card-title">Chi tiết nhóm sản phẩm</h3>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <strong>Tên danh mục:</strong>
+                            <strong>Tên nhóm sản phẩm:</strong>
                             <p>{{ $category->name }}</p>
                         </div>
                         <div class="mb-3">
