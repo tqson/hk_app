@@ -19,7 +19,8 @@
             color: #000;
             background: #fff;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
+            width: 100%;
         }
 
         /* Tiêu đề báo cáo */
@@ -38,27 +39,26 @@
         /* Bảng dữ liệu */
         .report-table {
             width: 100%;
+            max-width: 100%;
             border-collapse: collapse;
             margin-bottom: 30px;
-            page-break-inside: auto;
+            table-layout: fixed; /* Quan trọng: Giúp cố định chiều rộng cột */
         }
 
         .report-table th,
         .report-table td {
             border: 1px solid #000;
-            padding: 6px 8px;
+            padding: 5px;
             text-align: left;
-            font-size: 11pt;
+            font-size: 10pt;
+            word-wrap: break-word; /* Cho phép ngắt từ khi quá dài */
+            overflow: hidden;
         }
 
         .report-table th {
             background-color: #f2f2f2;
             font-weight: bold;
             text-align: center;
-        }
-
-        .report-table tr {
-            page-break-inside: avoid;
         }
 
         .text-center {
@@ -121,13 +121,20 @@
         /* Định dạng cho in ấn */
         @media print {
             @page {
-                size: A4 portrait;
-                margin: 1.5cm 1cm;
+                size: A4 landscape; /* Thay đổi sang chế độ ngang */
+                margin: 0.5cm; /* Giảm margin xuống */
+            }
+
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
             }
 
             body {
-                padding: 0;
-                font-size: 12pt;
+                padding: 5mm;
+                font-size: 10pt; /* Giảm font size khi in */
             }
 
             .print-controls {
@@ -135,11 +142,9 @@
             }
 
             .report-table {
+                width: 100%;
+                max-width: 100%;
                 page-break-inside: auto;
-            }
-
-            .report-table tr {
-                page-break-inside: avoid;
             }
 
             .report-table th {
@@ -167,12 +172,12 @@
 <table class="report-table">
     <thead>
     <tr>
-        <th style="width: 5%">STT</th>
-        <th style="width: 30%">Tên sản phẩm</th>
+        <th style="width: 7%">STT</th>
+        <th style="width: 25%">Tên sản phẩm</th> <!-- Giảm từ 30% xuống 25% -->
         <th style="width: 10%">Đơn vị</th>
-        <th style="width: 15%">Số lô</th>
-        <th style="width: 15%">Hạn sử dụng</th>
-        <th style="width: 15%">Số lượng tồn kho</th>
+        <th style="width: 23%">Số lô</th> <!-- Tăng từ 20% lên 23% -->
+        <th style="width: 20%">Hạn sử dụng</th> <!-- Tăng từ 15% lên 20% -->
+        <th style="width: 15%">Số lượng</th> <!-- Tăng từ 10% lên 15% -->
     </tr>
     </thead>
     <tbody>
@@ -217,7 +222,7 @@
     <div class="signature-date">Ngày {{ $now->day }} tháng {{ $now->month }} năm {{ $now->year }}</div>
     <div class="signature-title">NGƯỜI LẬP PHIẾU</div>
     <div class="signature-note">Ký, ghi rõ họ tên</div>
-{{--    <div class="signature-name">{{ strtoupper($user->name ?? '') }}</div>--}}
+    <div class="signature-name">{{ strtoupper($user->name ?? '') }}</div>
 </div>
 
 <script>
