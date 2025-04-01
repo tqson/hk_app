@@ -1,5 +1,17 @@
 @extends('layouts.app')
 
+@section('styles')
+    <style>
+        .btn-success {
+            margin-right: 10px;
+        }
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+    </style>
+@endsection
+
+
 @section('content')
     <div class="container-fluid">
         <h1 class="h3 mb-2 text-gray-800">Kiểm kê kho</h1>
@@ -43,10 +55,16 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Danh sách tồn kho</h6>
-                <a href="{{ route('disposal.index') }}" class="btn btn-info btn-sm">
-                    <i class="fas fa-list"></i> Danh sách phiếu hủy
-                </a>
+                <div>
+                    <a href="{{ route('inventory.print') }}" class="btn btn-success btn-sm me-2" target="_blank">
+                        <i class="fas fa-print"></i> In báo cáo
+                    </a>
+                    <a href="{{ route('disposal.index') }}" class="btn btn-info btn-sm">
+                        <i class="fas fa-list"></i> Danh sách phiếu hủy
+                    </a>
+                </div>
             </div>
+
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" width="100%" cellspacing="0">

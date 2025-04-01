@@ -85,6 +85,8 @@ Route::middleware(['auth'])->group(function () {
     // Inventory Management
     Route::prefix('inventory')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('inventory.index');
+        Route::get('/export', [App\Http\Controllers\InventoryController::class, 'export'])->name('inventory.export');
+        Route::get('/print', [App\Http\Controllers\InventoryController::class, 'printReport'])->name('inventory.print');
     });
 
     // Disposal Invoice
