@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductBatch;
+use App\Models\ReturnInvoice;
 use Illuminate\Http\Request;
 use App\Models\SalesInvoice;
 use Carbon\Carbon;
@@ -25,8 +26,18 @@ class DashboardController extends Controller
         $endDateCarbon = Carbon::parse($endDate);
 
         // Calculate total revenue for the selected period
-        $totalRevenue = SalesInvoice::whereBetween('created_at', [$startDateCarbon->startOfDay(), $endDateCarbon->endOfDay()])
+//        $totalRevenue = SalesInvoice::whereBetween('created_at', [$startDateCarbon->startOfDay(), $endDateCarbon->endOfDay()])
+//            ->sum('total_amount');
+
+        // For total revenue in the selected period
+        $totalSales = SalesInvoice::whereBetween('created_at', [$startDateCarbon->startOfDay(), $endDateCarbon->endOfDay()])
             ->sum('total_amount');
+
+        // Assuming there's a ReturnInvoice model with a total_amount field
+        $totalReturns = ReturnInvoice::whereBetween('created_at', [$startDateCarbon->startOfDay(), $endDateCarbon->endOfDay()])
+            ->sum('total_amount');
+
+        $totalRevenue = $totalSales - $totalReturns;
 
         // Get today's revenue
         $todayRevenue = SalesInvoice::whereDate('created_at', Carbon::today())
@@ -284,7 +295,7 @@ class DashboardController extends Controller
 
         // Thêm số ngày còn lại vào mỗi batch
         $batches->each(function ($batch) use ($today) {
-            $batch->days_left = max(0, $today->diffInDays($batch->expiry_date, false));
+            $batch->days_left = max(0, $today->diffInDays($batch->expiry_date, false) + 1);
         });
 
         return response()->json(['data' => $batches]);

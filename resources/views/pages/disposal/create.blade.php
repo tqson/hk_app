@@ -442,7 +442,7 @@
                         <div class="search-item" data-id="${product.id}">
                             <div class="product-name">${product.name}</div>
                             <div class="product-info">
-                                Đơn vị: ${product.unit} | Tồn kho: ${product.total_stock}
+                                Đơn vị: ${product.unit} | Tồn kho: ${product.quantity}
                             </div>
                         </div>
                     `);

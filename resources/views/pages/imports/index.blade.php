@@ -336,6 +336,13 @@
         }
 
         $(document).ready(function () {
+            $('#paymentForm').on('submit', function() {
+                // Đảm bảo giá trị gửi đi là giá trị số thực
+                var numericValue = $('#payment_amount').data('numeric-value') || 0;
+                $('#payment_amount').val(numericValue);
+                return true;
+            });
+
             $('#paymentModal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget);
                 var importId = button.data('import-id');
@@ -383,15 +390,39 @@
 
             // Thêm định dạng tiền tệ cho payment_amount
             $('#payment_amount').on('blur', function() {
-                var value = parseFloat($(this).val()) || 0;
-                if (value > 0) {
-                    $(this).val(value.toLocaleString('vi-VN'));
+                // Lưu giá trị số thực vào data attribute để sử dụng sau này
+                var numericValue = parseFloat($(this).val()) || 0;
+                $(this).data('numeric-value', numericValue);
+
+                if (numericValue > 0) {
+                    $(this).val(numericValue.toLocaleString('vi-VN'));
                 }
             });
 
             $('#payment_amount').on('focus', function() {
-                var value = $(this).val().replace(/[^\d]/g, '') || '';
-                $(this).val(value);
+                // Khi focus, hiển thị lại giá trị số thực không có định dạng
+                var numericValue = $(this).data('numeric-value') || '';
+                $(this).val(numericValue);
+            });
+
+// Cập nhật hàm kiểm tra giá trị nhập vào
+            $('#payment_amount').on('input', function () {
+                var payment = parseFloat($(this).val()) || 0;
+                // Cập nhật giá trị số thực
+                $(this).data('numeric-value', payment);
+
+                var debtAmount = parseFloat($('#debt_amount_data').data('value')) || 0;
+
+                if (payment > debtAmount) {
+                    $('#payment_error').text('Số tiền thanh toán không được vượt quá công nợ hiện tại');
+                    $('#confirmPaymentBtn').prop('disabled', true);
+                } else if (payment <= 0) {
+                    $('#payment_error').text('Số tiền thanh toán phải lớn hơn 0');
+                    $('#confirmPaymentBtn').prop('disabled', true);
+                } else {
+                    $('#payment_error').text('');
+                    $('#confirmPaymentBtn').prop('disabled', false);
+                }
             });
 
             $('#viewHistoryBtn').click(function () {

@@ -47,8 +47,12 @@ class ReturnController extends Controller
      */
     public function create()
     {
-        // Lấy 10 hóa đơn bán hàng gần nhất
-        $recentInvoices = SalesInvoice::orderBy('created_at', 'desc')
+        // Lấy 10 hóa đơn bán hàng gần nhất mà chưa được trả hàng
+        $recentInvoices = SalesInvoice::whereNotIn('id', function($query) {
+            $query->select('sales_invoice_id')
+                ->from('return_invoices');
+        })
+            ->orderBy('created_at', 'desc')
             ->take(10)
             ->get();
 
@@ -63,6 +67,12 @@ class ReturnController extends Controller
         $search = $request->input('search');
 
         $query = SalesInvoice::query();
+
+        // Loại trừ những hóa đơn đã được trả hàng
+        $query->whereNotIn('id', function($subquery) {
+            $subquery->select('sales_invoice_id')
+                ->from('return_invoices');
+        });
 
         if ($search) {
             // Nếu search bắt đầu bằng "HD", loại bỏ "HD" và các số 0 ở đầu để tìm theo ID

@@ -196,9 +196,20 @@
                                             </div>
                                         </div>
                                     @else
-                                        <a href="{{ route('products.show', $product->id) }}" class="action-dropdown-item">
-                                            <i class="w-100 fas fa-eye"></i>
-                                        </a>
+                                        <div class="action-dropdown">
+                                            <button type="button" class="action-dropdown-toggle w-100" onclick="toggleActionMenu({{ $product->id }})">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <div id="actionDropdown{{ $product->id }}" class="action-dropdown-menu">
+                                                <a href="{{ route('products.show', $product->id) }}" class="action-dropdown-item">
+                                                    <i class="fas fa-eye"></i> Xem chi tiết
+                                                </a>
+                                                <a href="javascript:void(0)" class="action-dropdown-item text-success" onclick="confirmActivate('{{ $product->id }}', '{{ $product->name }}')">
+                                                    <i class="fas fa-check-circle"></i> Kích hoạt lại
+                                                </a>
+                                                <div class="action-dropdown-divider"></div>
+                                            </div>
+                                        </div>
                                     @endif
 
                                 </td>
@@ -379,6 +390,15 @@
             // Toggle the clicked menu
             const menu = document.getElementById(`actionDropdown${productId}`);
             menu.classList.toggle('show');
+        }
+
+        function confirmActivate(productId, productName) {
+            document.getElementById('productNameActivate').textContent = productName;
+            document.getElementById('activateForm').action = `/products/${productId}/activate`;
+            $('#activateModal').modal('show');
+
+            // Close the dropdown
+            document.getElementById(`actionDropdown${productId}`).classList.remove('show');
         }
 
         // Close dropdown when clicking outside
