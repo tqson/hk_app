@@ -29,6 +29,13 @@
             margin-bottom: 20px;
         }
 
+        .report-date {
+            font-size: 12pt;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+
         .report-title {
             font-size: 18pt;
             font-weight: bold;
@@ -167,6 +174,7 @@
 
 <div class="report-header">
     <div class="report-title">BÁO CÁO KIỂM KÊ</div>
+    <div class="report-date">Đến ngày {{ $now->day }}/{{ $now->month }}/{{ $now->year }} {{ $now->format('H:i') }}</div>
 </div>
 
 <table class="report-table">
