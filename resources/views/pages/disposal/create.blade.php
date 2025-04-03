@@ -800,14 +800,9 @@
                     $('.search-results').hide();
                 }
             });
-
             // Hàm định dạng tiền tệ
             function formatCurrency(amount) {
-                return new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND',
-                    maximumFractionDigits: 0
-                }).format(amount);
+                return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' VNĐ';
             }
 
             // Hàm định dạng ngày tháng

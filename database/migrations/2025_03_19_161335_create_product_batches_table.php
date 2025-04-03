@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('manufacturing_date')->comment('Ngày sản xuất');
             $table->date('expiry_date')->comment('Hạn sử dụng');
             $table->integer('quantity')->default(0)->comment('Số lượng tồn kho theo lô');
-            $table->decimal('import_price', 12, 2)->default(0)->comment('Giá nhập của lô');
+            $table->integer('import_price')->default(0)->comment('Giá nhập của lô');
             $table->enum('status', ['active', 'inactive', 'expired'])->default('active');
             $table->timestamps();
 

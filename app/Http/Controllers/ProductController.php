@@ -211,7 +211,7 @@ class ProductController extends Controller
                         'expiry_date' => $batchData['expiry_date'],
                         'quantity' => $batchData['quantity'],
                         'import_price' => $batchData['import_price'],
-                        'status' => $batchData['status'],
+//                        'status' => $batchData['status'],
                     ]);
                 } else {
                     // Create new batch
@@ -221,7 +221,7 @@ class ProductController extends Controller
                         'expiry_date' => $batchData['expiry_date'],
                         'quantity' => $batchData['quantity'],
                         'import_price' => $batchData['import_price'],
-                        'status' => $batchData['status'],
+//                        'status' => $batchData['status'],
                     ]);
                 }
             }

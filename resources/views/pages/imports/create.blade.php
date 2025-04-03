@@ -506,9 +506,13 @@
                                 ${batchAlreadyAdded ? 'disabled' : ''}>
                         </td>
                         <td>
-                            <input type="number" class="form-control batch-price" min="0"
-                                value="${batch.import_price || 0}"
-                                ${batchAlreadyAdded || isExistingBatch ? 'disabled' : ''}>
+                            ${batchAlreadyAdded || isExistingBatch ?
+                            `<div>${formatCurrency(batch.import_price)}</div>
+                            <input type="hidden" class="batch-price" value="${batch.import_price}">
+                            ` :
+                            `<input type="number" class="form-control batch-price" min="0"
+                            value="${batch.import_price || 0}">`
+                        }
                         </td>
                     </tr>
                 `);
@@ -992,6 +996,12 @@
 
                 // Thiết lập ngày tháng khi mở modal
                 $('#batchModal').on('shown.bs.modal', setupDateConstraints);
+            }
+
+            // Hàm định dạng tiền tệ
+            function formatCurrency(amount) {
+                console.log('amout', amount);
+                return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' VNĐ';
             }
 
             // Khởi chạy ứng dụng
