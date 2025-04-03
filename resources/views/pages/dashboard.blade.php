@@ -189,12 +189,12 @@
                                     <td>{{ $batch->batch_number }}</td>
                                     <td>{{ $batch->expiry_date->format('d/m/Y') }}</td>
                                     <td>
-                                        @if($batch->expiry_date->addDay()->isPast() || $batch->expiry_date->addDay()->diffInDays(now()) == 0)
+                                        @if($batch->expiry_date->isPast())
                                             <span class="badge badge-danger">Đã hết hạn</span>
                                         @else
                                             <span class="badge {{ $batch->expiry_date->diffInDays(now()) <= 30 ? 'badge-warning' : 'badge-info' }}">
-                                                {{ $batch->expiry_date->diffInDays(now()) }} ngày
-                                            </span>
+                                            {{ $batch->expiry_date->diffInDays(now()) }} ngày
+                                        </span>
                                         @endif
                                     </td>
                                     <td>
