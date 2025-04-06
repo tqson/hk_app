@@ -42,9 +42,9 @@
                             <button type="submit" class="btn btn-primary me-2">
                                 <i class="fas fa-search"></i> Tìm kiếm
                             </button>
-                            <a href="{{ route('disposal.create') }}" class="btn btn-success">
-                                <i class="fas fa-trash-alt"></i> Tạo phiếu hủy
-                            </a>
+{{--                            <a href="{{ route('disposal.create') }}" class="btn btn-success">--}}
+{{--                                <i class="fas fa-trash-alt"></i> Tạo phiếu hủy--}}
+{{--                            </a>--}}
                         </div>
                     </div>
                 </form>
@@ -59,9 +59,9 @@
                     <a href="{{ route('inventory.print') }}" class="btn btn-success btn-sm me-2" target="_blank">
                         <i class="fas fa-print"></i> In báo cáo
                     </a>
-                    <a href="{{ route('disposal.index') }}" class="btn btn-info btn-sm">
-                        <i class="fas fa-list"></i> Danh sách phiếu hủy
-                    </a>
+{{--                    <a href="{{ route('disposal.index') }}" class="btn btn-info btn-sm">--}}
+{{--                        <i class="fas fa-list"></i> Danh sách phiếu hủy--}}
+{{--                    </a>--}}
                 </div>
             </div>
 
@@ -110,11 +110,11 @@
                                             <td>{{ $batch->batch_number }}</td>
                                             <td>
                                                 {{ $batch->expiry_date->format('d/m/Y') }}
-                                                @if($batch->expiry_date->isPast())
-                                                    <span class="badge badge-danger">Hết hạn</span>
-                                                @elseif($batch->expiry_date->diffInMonths(now()) <= 3)
-                                                    <span class="badge badge-warning">Sắp hết hạn</span>
-                                                @endif
+{{--                                                @if($batch->expiry_date->isPast())--}}
+{{--                                                    <span class="badge badge-danger">Hết hạn</span>--}}
+{{--                                                @elseif($batch->expiry_date->diffInMonths(now()) <= 3)--}}
+{{--                                                    <span class="badge badge-warning">Sắp hết hạn</span>--}}
+{{--                                                @endif--}}
                                             </td>
                                             <td class="text-center">
                                                 <span class="font-weight-bold {{ $batch->quantity > 0 ? 'text-success' : 'text-danger' }}">
