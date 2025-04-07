@@ -8,9 +8,11 @@
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Chi tiết sản phẩm</h1>
             <div>
-                <a href="{{ route('products.edit', $product->id) }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-edit"></i> Chỉnh sửa
-                </a>
+                @if($product->status == 1)
+                    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit"></i> Chỉnh sửa
+                    </a>
+                @endif
                 <a href="{{ route('products.index') }}" class="btn btn-secondary btn-sm">
                     <i class="fas fa-arrow-left"></i> Quay lại
                 </a>
