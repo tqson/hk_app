@@ -262,11 +262,17 @@ class ProductController extends Controller
     public function searchSale(Request $request)
     {
         $query = $request->get('search');
+        $today = now()->format('Y-m-d');
+
         $products = Product::where('name', 'like', "%{$query}%")
-            ->with(['category', 'batches'])
+            ->with(['category', 'batches' => function($q) use ($today) {
+                $q->where('quantity', '>', 0)
+                    ->where('expiry_date', '>=', $today);
+            }])
             ->where('status', true)
-            ->whereHas('batches', function($q) {
-                $q->whereRaw('quantity > 0');
+            ->whereHas('batches', function($q) use ($today) {
+                $q->where('quantity', '>', 0)
+                    ->where('expiry_date', '>=', $today);
             })
             ->limit(10)
             ->get();
@@ -277,6 +283,7 @@ class ProductController extends Controller
 
         return response()->json($products);
     }
+
 
     public function search(Request $request)
     {

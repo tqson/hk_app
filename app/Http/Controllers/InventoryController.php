@@ -44,6 +44,14 @@ class InventoryController extends Controller
         $sortDirection = $request->input('sort_direction', 'asc');
         $query->orderBy($sortField, $sortDirection);
 
+        // Lưu query vào session để sử dụng cho export và print
+        session(['inventory_filter_query' => [
+            'search' => $request->search,
+            'stock_status' => $request->stock_status,
+            'sort_field' => $sortField,
+            'sort_direction' => $sortDirection
+        ]]);
+
         // Phân trang
         $perPage = $request->input('perPage', 10);
         $products = $query->paginate($perPage)->appends($request->except('page'));
@@ -51,12 +59,45 @@ class InventoryController extends Controller
         return view('pages.inventory.index', compact('products'));
     }
 
+    /**
+     * Áp dụng các bộ lọc từ session vào query
+     */
+    private function applyFiltersFromSession()
+    {
+        $query = Product::with(['batches']);
+        $filters = session('inventory_filter_query', []);
+
+        // Áp dụng tìm kiếm
+        if (!empty($filters['search'])) {
+            $query->where('name', 'like', '%' . $filters['search'] . '%');
+        }
+
+        // Áp dụng lọc theo trạng thái tồn kho
+        if (!empty($filters['stock_status'])) {
+            if ($filters['stock_status'] === 'in_stock') {
+                $query->whereHas('batches', function($q) {
+                    $q->where('quantity', '>', 0);
+                });
+            } elseif ($filters['stock_status'] === 'out_of_stock') {
+                $query->whereDoesntHave('batches', function($q) {
+                    $q->where('quantity', '>', 0);
+                });
+            }
+        }
+
+        // Áp dụng sắp xếp
+        $sortField = $filters['sort_field'] ?? 'name';
+        $sortDirection = $filters['sort_direction'] ?? 'asc';
+        $query->orderBy($sortField, $sortDirection);
+
+        return $query;
+    }
+
     public function export()
     {
-        // Lấy dữ liệu sản phẩm
-        $products = Product::with(['batches' => function($query) {
-            $query->where('quantity', '>', 0);
-        }])->get();
+        // Lấy dữ liệu sản phẩm đã được lọc
+        $query = $this->applyFiltersFromSession();
+        $products = $query->get();
 
         // Tạo đối tượng PhpWord
         $phpWord = new PhpWord();
@@ -152,15 +193,13 @@ class InventoryController extends Controller
 
     public function printReport()
     {
-        // Lấy dữ liệu sản phẩm
-        $products = Product::with(['batches' => function($query) {
-            $query->where('quantity', '>', 0);
-        }])->get();
+        // Lấy dữ liệu sản phẩm đã được lọc
+        $query = $this->applyFiltersFromSession();
+        $products = $query->get();
 
         $user = Auth::user();
         $now = Carbon::now();
 
         return view('pages.inventory.print', compact('products', 'user', 'now'));
     }
-
 }

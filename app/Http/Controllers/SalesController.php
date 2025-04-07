@@ -23,7 +23,6 @@ class SalesController extends Controller
     {
         $query = $request->get('query');
         $products = Product::where('name', 'like', "%{$query}%")
-//            ->where('stock', '>', 0)
             ->with('category')
             ->get();
 
@@ -32,9 +31,13 @@ class SalesController extends Controller
 
     public function getProduct($id)
     {
-        $product = Product::with(['category', 'batches'])->findOrFail($id);
+        $today = now()->format('Y-m-d');
 
-        // Calculate total quantity from batches
+        $product = Product::with(['category', 'batches' => function($q) use ($today) {
+            $q->where('quantity', '>', 0)
+                ->where('expiry_date', '>=', $today);
+        }])->findOrFail($id);
+
         $product->total_quantity = $product->batches->sum('quantity');
 
         return response()->json($product);
