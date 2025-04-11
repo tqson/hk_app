@@ -274,6 +274,7 @@ class ProductController extends Controller
                 $q->where('quantity', '>', 0)
                     ->where('expiry_date', '>=', $today);
             })
+            ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
 
