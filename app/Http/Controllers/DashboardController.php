@@ -40,43 +40,78 @@ class DashboardController extends Controller
         $totalRevenue = $totalSales - $totalReturns;
 
         // Get today's revenue
-        $todayRevenue = SalesInvoice::whereDate('created_at', Carbon::today())
+        $todaySales = SalesInvoice::whereDate('created_at', Carbon::today())
             ->sum('total_amount');
+        $todayReturns = ReturnInvoice::whereDate('created_at', Carbon::today())
+            ->sum('total_amount');
+        $todayRevenue = $todaySales - $todayReturns;
 
         // Get current week's revenue (Monday to Sunday)
-        $currentWeekRevenue = SalesInvoice::whereBetween('created_at', [
+        $currentWeekSales = SalesInvoice::whereBetween('created_at', [
             Carbon::now()->startOfWeek(),
             Carbon::now()->endOfWeek()
         ])->sum('total_amount');
+        $currentWeekReturns = ReturnInvoice::whereBetween('created_at', [
+            Carbon::now()->startOfWeek(),
+            Carbon::now()->endOfWeek()
+        ])->sum('total_amount');
+        $currentWeekRevenue = $currentWeekSales - $currentWeekReturns;
 
         // Get current month's revenue
-        $currentMonthRevenue = SalesInvoice::whereBetween('created_at', [
+        $currentMonthSales = SalesInvoice::whereBetween('created_at', [
             Carbon::now()->startOfMonth(),
             Carbon::now()->endOfMonth()
         ])->sum('total_amount');
+        $currentMonthReturns = ReturnInvoice::whereBetween('created_at', [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth()
+        ])->sum('total_amount');
+        $currentMonthRevenue = $currentMonthSales - $currentMonthReturns;
 
         // Get daily revenue data for chart within the selected date range
-        $dailyRevenue = SalesInvoice::whereBetween('created_at', [$startDateCarbon->copy()->startOfDay(), $endDateCarbon->copy()->endOfDay()])
-            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total_amount) as total'))
-            ->groupBy('date')
-            ->orderBy('date')
-            ->get()
-            ->keyBy('date')
-            ->map(function ($item) {
-                return round($item->total, 2);
-            });
-
-        // Generate all dates in the range to ensure continuous data points
+//        $dailyRevenue = SalesInvoice::whereBetween('created_at', [$startDateCarbon->copy()->startOfDay(), $endDateCarbon->copy()->endOfDay()])
+//            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total_amount) as total'))
+//            ->groupBy('date')
+//            ->orderBy('date')
+//            ->get()
+//            ->keyBy('date')
+//            ->map(function ($item) {
+//                return round($item->total, 2);
+//            });
+//
+//        // Generate all dates in the range to ensure continuous data points
         $dateRange = collect(CarbonPeriod::create($startDateCarbon, $endDateCarbon))
             ->map(function ($date) {
                 return $date->format('Y-m-d');
             });
+//
+//        // Fill in missing dates with zero values
+//        $chartData = $dateRange->mapWithKeys(function ($date) use ($dailyRevenue) {
+//            // Format date for display in chart
+//            $displayDate = Carbon::parse($date)->format('d/m/Y');
+//            return [$displayDate => $dailyRevenue[$date] ?? 0];
+//        });
+        $dailySales = SalesInvoice::whereBetween('created_at', [$startDateCarbon->copy()->startOfDay(), $endDateCarbon->copy()->endOfDay()])
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total_amount) as total'))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
 
-        // Fill in missing dates with zero values
-        $chartData = $dateRange->mapWithKeys(function ($date) use ($dailyRevenue) {
+        $dailyReturns = ReturnInvoice::whereBetween('created_at', [$startDateCarbon->copy()->startOfDay(), $endDateCarbon->copy()->endOfDay()])
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total_amount) as total'))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
+
+        $chartData = $dateRange->mapWithKeys(function ($date) use ($dailySales, $dailyReturns) {
+            $sales = isset($dailySales[$date]) ? $dailySales[$date]->total : 0;
+            $returns = isset($dailyReturns[$date]) ? $dailyReturns[$date]->total : 0;
+            $net = $sales - $returns;
             // Format date for display in chart
             $displayDate = Carbon::parse($date)->format('d/m/Y');
-            return [$displayDate => $dailyRevenue[$date] ?? 0];
+            return [$displayDate => round($net, 2)];
         });
 
         // Calculate weekly revenue data based on the selected date range
@@ -103,10 +138,17 @@ class DashboardController extends Controller
                 $weekStartDate = $startDateCarbon->copy();
             }
 
-            $weeklyTotal = SalesInvoice::whereBetween('created_at', [
+            $weeklySales = SalesInvoice::whereBetween('created_at', [
                 $weekStartDate->startOfDay(),
                 $weekEndDate->endOfDay()
             ])->sum('total_amount');
+
+            $weeklyReturns = ReturnInvoice::whereBetween('created_at', [
+                $weekStartDate->startOfDay(),
+                $weekEndDate->endOfDay()
+            ])->sum('total_amount');
+
+            $weeklyTotal = $weeklySales - $weeklyReturns;
 
             // Format date for display
             $weekLabel = 'Week ' . $weekNumber . ' (' . $weekStartDate->format('d/m') . ' - ' . $weekEndDate->format('d/m') . ')';
@@ -139,10 +181,17 @@ class DashboardController extends Controller
                 $monthStartDate = $startDateCarbon->copy();
             }
 
-            $monthlyTotal = SalesInvoice::whereBetween('created_at', [
+            $monthlySales = SalesInvoice::whereBetween('created_at', [
                 $monthStartDate->startOfDay(),
                 $monthEndDate->endOfDay()
             ])->sum('total_amount');
+
+            $monthlyReturns = ReturnInvoice::whereBetween('created_at', [
+                $monthStartDate->startOfDay(),
+                $monthEndDate->endOfDay()
+            ])->sum('total_amount');
+
+            $monthlyTotal = $monthlySales - $monthlyReturns;
 
             // Format month for display
             $monthLabel = $currentMonth->format('m/Y');
@@ -209,8 +258,7 @@ class DashboardController extends Controller
         if ($month && $year) {
             $startDate = "{$year}-{$month}-01";
             $endDate = date('Y-m-t', strtotime($startDate));
-            var_dump($startDate);
-            var_dump($endDate);
+
             return [
                 'start_date' => $startDate,
                 'end_date' => $endDate,
