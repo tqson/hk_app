@@ -119,7 +119,7 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
+<div class="login-container">
     <div class="login-title">
         <h1>HK LOVE</h1>
         <p>Chào mừng quay trở lại! Vui lòng đăng nhập vào tài khoản của bạn.</p>
@@ -137,7 +137,6 @@
 
     <form action="{{ route('login') }}" method="POST">
         @csrf
-
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <div class="input-group">
@@ -149,7 +148,6 @@
                        value="{{ old('email') }}" required autofocus>
             </div>
         </div>
-
         <div class="mb-3">
             <label for="password" class="form-label">Mật khẩu</label>
             <div class="input-group">
