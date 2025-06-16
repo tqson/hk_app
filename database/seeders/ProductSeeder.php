@@ -252,4 +252,10 @@ class ProductSeeder extends Seeder
             ]);
         }
     }
+
+    private function createBatchesForProductFake($product)
+    {
+
+    }
 }
+// Get Update Delete create
