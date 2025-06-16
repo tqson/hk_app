@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('return_invoices', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 20);
+            $table->integer('total_quantity');
             $table->foreignId('sales_invoice_id')->constrained('sales_invoices');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
