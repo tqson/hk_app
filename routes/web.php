@@ -37,6 +37,7 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/calculator', [DashboardController::class, 'calculator'])->name('calculator');
     Route::get('/dashboard/expiry-filter', [DashboardController::class, 'expiryFilter'])->name('dashboard.expiry-filter');
 
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

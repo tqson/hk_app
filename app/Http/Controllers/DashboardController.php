@@ -348,4 +348,9 @@ class DashboardController extends Controller
 
         return response()->json(['data' => $batches]);
     }
+
+    public function calculator()
+    {
+        return view('pages.calculator');
+    }
 }
